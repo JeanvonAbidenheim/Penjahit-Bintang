@@ -1,0 +1,196 @@
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--navbar-tinggi) + 3rem) 1.5rem 4rem;
+  position: relative;
+  overflow: hidden;
+  background: #fafaf8;
+}
+
+.hero-bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.circle-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+  top: -200px; right: -100px;
+}
+
+.circle-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(15,45,74,0.06) 0%, transparent 70%);
+  bottom: -100px; left: -100px;
+}
+
+.hero-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.hero-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content {
+  animation: heroMasuk 0.8s ease forwards;
+}
+
+@keyframes heroMasuk {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--emas-gelap);
+  background: var(--emas-muda);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-bulat);
+  letter-spacing: 0.5px;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--hitam);
+  margin-bottom: 1.25rem;
+}
+
+.hero-title em { font-style: italic; color: var(--emas); }
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: var(--abu-terang);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  max-width: 480px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--hitam);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--abu-terang);
+  font-weight: 500;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+}
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: heroVisualMasuk 0.8s ease 0.2s both;
+}
+
+@keyframes heroVisualMasuk {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.hero-card-main {
+  width: 240px;
+  height: 280px;
+  background: linear-gradient(145deg, var(--hitam) 0%, var(--abu-tengah) 100%);
+  border-radius: var(--radius-besar);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  box-shadow: var(--shadow-besar);
+  position: relative;
+  z-index: 2;
+}
+
+.visual-icon { font-size: 4rem; }
+
+.visual-tag {
+  font-size: 0.85rem;
+  color: var(--emas);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.hero-card-float {
+  position: absolute;
+  background: var(--putih);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sedang);
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: var(--shadow-sedang);
+  white-space: nowrap;
+}
+
+.card-f1 { top: 20px;  right: -10px; animation: floatUp 3s ease-in-out infinite; }
+.card-f3 { bottom: 20px; right: -10px; animation: floatUp 3s ease-in-out 0.5s infinite; }
+.card-f2 { top: 50%; left: -20px; animation: floatLeft 3s ease-in-out 1s infinite; }
+
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes floatLeft {
+  0%, 100% { transform: translateY(-50%); }
+  50%      { transform: translateY(calc(-50% - 8px)); }
+}

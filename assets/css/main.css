@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Karla:wght@300;400;500;600&display=swap');
+
+@import 'base.css';
+@import 'navbar.css';
+@import 'hero.css';
+@import 'layanan.css';
+@import 'galeri.css';
+@import 'tentang.css';
+@import 'testimoni.css';
+@import 'kontak.css';
+@import 'footer.css';
+@import 'responsive.css';

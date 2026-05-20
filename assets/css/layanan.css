@@ -1,0 +1,129 @@
+.layanan {
+  background: var(--putih);
+  border-top: 1px solid var(--border);
+}
+
+.layanan-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.layanan-card {
+  background: var(--putih);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-besar);
+  padding: 2rem 1.5rem;
+  position: relative;
+  transition: all var(--transisi-sedang);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.layanan-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-besar);
+  border-color: var(--emas);
+}
+
+.layanan-card.card-featured {
+  background: var(--hitam);
+  border-color: var(--hitam);
+  color: var(--putih);
+}
+
+.card-featured .card-desc,
+.card-featured .card-features li { color: #aaa; }
+.card-featured .card-features li::before { color: var(--emas) !important; }
+.card-featured .card-cta { color: var(--emas); }
+.card-featured:hover { box-shadow: var(--shadow-besar), 0 0 40px rgba(201,168,76,0.15); }
+
+.card-badge-top {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--emas);
+  color: var(--hitam);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-bulat);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.card-icon-wrap {
+  width: 52px; height: 52px;
+  background: var(--abu-super-terang);
+  border-radius: var(--radius-sedang);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+
+.card-featured .card-icon-wrap { background: rgba(255,255,255,0.1); }
+.card-icon { font-size: 1.6rem; }
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.card-desc {
+  font-size: 0.875rem;
+  color: var(--abu-terang);
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.card-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.card-features li {
+  font-size: 0.82rem;
+  color: var(--abu-terang);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.card-features li::before {
+  content: '✓';
+  color: var(--emas);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.card-price {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--abu-terang);
+  margin-top: 0.25rem;
+}
+
+.card-price strong {
+  color: var(--emas-gelap);
+  font-size: 1rem;
+}
+
+.card-cta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--hitam);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: gap var(--transisi-cepat);
+  margin-top: 0.25rem;
+}
+
+.layanan-card:hover .card-cta     { gap: 0.5rem; color: var(--emas-gelap); }
+.card-featured .card-cta:hover    { color: var(--emas-terang); }
