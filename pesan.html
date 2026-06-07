@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buat Pesanan — Penjahit Bintang</title>
+  <link rel="stylesheet" href="assets/css/sistem.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="sistem-navbar">
+    <a href="index.html" class="sistem-logo">
+      <span>✦</span> Penjahit <em>Bintang</em>
+    </a>
+    <div class="sistem-nav-right">
+      <span class="sistem-user">Halo, <strong id="namaUser">...</strong></span>
+      <a href="status.html">Pesanan Saya</a>
+      <button class="btn-logout" onclick="logout()">Keluar</button>
+    </div>
+  </nav>
+
+  <!-- Konten -->
+  <div class="sistem-container">
+    <h1 class="sistem-judul">Buat Pesanan Baru</h1>
+    <p class="sistem-subjudul">Isi detail pesanan kamu, kami akan konfirmasi segera via WhatsApp.</p>
+
+    <div class="pesan-card">
+
+      <!-- Wrap form (disembunyikan saat sukses) -->
+      <div id="formWrap">
+        <div id="pesanNotif" class="auth-pesan"></div>
+
+        <form class="pesan-form" id="formPesan">
+
+          <div class="form-group">
+            <label for="layanan">Jenis Layanan *</label>
+            <select id="layanan" name="layanan" required>
+              <option value="" disabled selected>-- Pilih layanan --</option>
+              <option value="Permak Pakaian">Permak Pakaian</option>
+              <option value="Jahit Custom Pria">Jahit Custom Pria</option>
+              <option value="Jahit Custom Wanita">Jahit Custom Wanita</option>
+              <option value="Seragam Sekolah">Seragam Sekolah</option>
+              <option value="Seragam Kantor">Seragam Kantor</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="deskripsi">Deskripsi Pesanan *</label>
+            <textarea id="deskripsi" name="deskripsi" rows="5"
+              placeholder="Contoh: Saya ingin jahit kemeja batik lengan panjang, ukuran L, bahan sudah ada. Model seperti kemeja formal biasa."
+              required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="estimasiAmbil">Estimasi Tanggal Ambil (opsional)</label>
+            <input type="date" id="estimasiAmbil" name="estimasiAmbil" />
+          </div>
+
+          <button type="submit" class="btn-pesan">
+            <span class="btn-teks">Buat Pesanan</span>
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Tampil saat pesanan berhasil dibuat -->
+      <div class="pesan-sukses" id="pesanSukses">
+        <div class="sukses-icon">✓</div>
+        <h2 style="font-family:var(--font-display);font-size:1.5rem">Pesanan Berhasil Dibuat!</h2>
+        <p style="color:var(--abu-terang);font-size:0.9rem">Nomor order kamu:</p>
+        <div class="sukses-nomor" id="nomorOrderSukses"></div>
+        <p style="color:var(--abu-terang);font-size:0.85rem;max-width:320px;line-height:1.6">
+          Simpan nomor ini. Kami akan menghubungi kamu via WhatsApp untuk konfirmasi pesanan.
+        </p>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;margin-top:0.5rem">
+          <a href="status.html" class="btn-auth" style="text-decoration:none;text-align:center;padding:0.7rem 1.5rem">
+            Lihat Status Pesanan
+          </a>
+          <a href="pesan.html" class="btn-auth"
+            style="background:var(--abu-super-terang);color:var(--hitam);border:1.5px solid var(--border);text-decoration:none;text-align:center;padding:0.7rem 1.5rem"
+            onclick="location.reload();return false;">
+            Buat Pesanan Lagi
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/pesan.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', initHalamanPesan);
+  </script>
+
+</body>
+</html>

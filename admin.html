@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Admin — Penjahit Bintang</title>
+  <link rel="stylesheet" href="assets/css/sistem.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="sistem-navbar">
+    <a href="index.html" class="sistem-logo">
+      <span>✦</span> Penjahit <em>Bintang</em>
+    </a>
+    <div class="sistem-nav-right">
+      <span class="sistem-user">Admin: <strong id="emailAdmin">...</strong></span>
+      <button class="btn-logout" onclick="logout()">Keluar</button>
+    </div>
+  </nav>
+
+  <!-- Konten -->
+  <div class="sistem-container-wide">
+
+    <h1 class="sistem-judul">Dashboard Admin</h1>
+    <p class="sistem-subjudul">Kelola semua pesanan masuk dari pelanggan.</p>
+
+    <!-- Statistik -->
+    <div class="admin-stats">
+      <div class="stat-card">
+        <span class="angka" id="statTotal">0</span>
+        <span class="keterangan">Total Pesanan</span>
+      </div>
+      <div class="stat-card">
+        <span class="angka" id="statMenunggu" style="color:#f59e0b">0</span>
+        <span class="keterangan">Menunggu Konfirmasi</span>
+      </div>
+      <div class="stat-card">
+        <span class="angka" id="statDiproses" style="color:#8b5cf6">0</span>
+        <span class="keterangan">Sedang Diproses</span>
+      </div>
+      <div class="stat-card">
+        <span class="angka" id="statSelesai" style="color:#10b981">0</span>
+        <span class="keterangan">Selesai / Diambil</span>
+      </div>
+    </div>
+
+    <!-- Filter status -->
+    <div class="admin-filter">
+      <button class="filter-status aktif" data-status="">Semua</button>
+      <button class="filter-status" data-status="menunggu_konfirmasi">⏳ Menunggu</button>
+      <button class="filter-status" data-status="dikonfirmasi">✅ Dikonfirmasi</button>
+      <button class="filter-status" data-status="diproses">🧵 Diproses</button>
+      <button class="filter-status" data-status="selesai">🎉 Selesai</button>
+      <button class="filter-status" data-status="diambil">📦 Diambil</button>
+    </div>
+
+    <!-- Tabel pesanan -->
+    <div class="admin-tabel-wrap">
+      <table class="admin-tabel">
+        <thead>
+          <tr>
+            <th>No. Order</th>
+            <th>Pelanggan</th>
+            <th>Layanan</th>
+            <th>Deskripsi</th>
+            <th>Status</th>
+            <th>Tanggal</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelPesanan">
+          <tr><td colspan="7" class="loading-td">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Modal update status -->
+  <div class="modal-wrap" id="modalUpdate">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <button class="modal-tutup">✕</button>
+      <h3>Update Status Pesanan</h3>
+
+      <div class="modal-form">
+        <div class="form-group">
+          <label for="selectStatus">Status Baru</label>
+          <select id="selectStatus">
+            <option value="menunggu_konfirmasi">⏳ Menunggu Konfirmasi</option>
+            <option value="dikonfirmasi">✅ Dikonfirmasi</option>
+            <option value="diproses">🧵 Sedang Diproses</option>
+            <option value="selesai">🎉 Selesai</option>
+            <option value="diambil">📦 Sudah Diambil</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="estimasiAdmin">Estimasi Selesai (opsional)</label>
+          <input type="date" id="estimasiAdmin" />
+        </div>
+
+        <div class="form-group">
+          <label for="catatanAdmin">Catatan untuk Pelanggan (opsional)</label>
+          <textarea id="catatanAdmin" rows="3"
+            placeholder="Contoh: Bahan sedang kami potong, estimasi 3 hari lagi."></textarea>
+        </div>
+
+        <button class="btn-simpan" id="btnSimpanStatus">
+          Simpan & Kirim Notif WA
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', initAdmin);
+  </script>
+
+</body>
+</html>
