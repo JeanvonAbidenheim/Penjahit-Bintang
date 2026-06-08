@@ -221,7 +221,7 @@ async function kirimNotifWA(pesananId, statusBaru) {
     '📋 No. Order: *' + nomor + '*\n' +
     info.icon + ' Status: *' + info.label + '*\n\n' +
     'Pantau pesanan di:\n' +
-    'https://penjahitbintang.vercel.app/status.html\n\n' + // ← GANTI URL
+    'https://penjahit-bintang.vercel.app/status.html\n\n' + // ← GANTI URL
     'Terima kasih sudah mempercayai kami! 🙏';
 
   window.open(
