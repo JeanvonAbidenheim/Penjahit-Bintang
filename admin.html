@@ -8,20 +8,17 @@
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav class="sistem-navbar">
     <a href="index.html" class="sistem-logo">
       <span>✦</span> Penjahit <em>Bintang</em>
     </a>
     <div class="sistem-nav-right">
       <span class="sistem-user">Admin: <strong id="emailAdmin">...</strong></span>
-      <button class="btn-logout" onclick="logout()">Keluar</button>
+      <button class="btn-logout" id="btnLogout">Keluar</button>
     </div>
   </nav>
 
-  <!-- Konten -->
   <div class="sistem-container-wide">
-
     <h1 class="sistem-judul">Dashboard Admin</h1>
     <p class="sistem-subjudul">Kelola semua pesanan masuk dari pelanggan.</p>
 
@@ -45,7 +42,7 @@
       </div>
     </div>
 
-    <!-- Filter status -->
+    <!-- Filter -->
     <div class="admin-filter">
       <button class="filter-status aktif" data-status="">Semua</button>
       <button class="filter-status" data-status="menunggu_konfirmasi">⏳ Menunggu</button>
@@ -55,7 +52,7 @@
       <button class="filter-status" data-status="diambil">📦 Diambil</button>
     </div>
 
-    <!-- Tabel pesanan -->
+    <!-- Tabel -->
     <div class="admin-tabel-wrap">
       <table class="admin-tabel">
         <thead>
@@ -70,11 +67,10 @@
           </tr>
         </thead>
         <tbody id="tabelPesanan">
-          <tr><td colspan="7" class="loading-td">Memuat data...</td></tr>
+          <tr><td colspan="7" class="loading-td">⏳ Memuat data...</td></tr>
         </tbody>
       </table>
     </div>
-
   </div>
 
   <!-- Modal update status -->
@@ -83,7 +79,6 @@
     <div class="modal-card">
       <button class="modal-tutup">✕</button>
       <h3>Update Status Pesanan</h3>
-
       <div class="modal-form">
         <div class="form-group">
           <label for="selectStatus">Status Baru</label>
@@ -95,31 +90,33 @@
             <option value="diambil">📦 Sudah Diambil</option>
           </select>
         </div>
-
         <div class="form-group">
           <label for="estimasiAdmin">Estimasi Selesai (opsional)</label>
           <input type="date" id="estimasiAdmin" />
         </div>
-
         <div class="form-group">
           <label for="catatanAdmin">Catatan untuk Pelanggan (opsional)</label>
           <textarea id="catatanAdmin" rows="3"
             placeholder="Contoh: Bahan sedang kami potong, estimasi 3 hari lagi."></textarea>
         </div>
-
         <button class="btn-simpan" id="btnSimpanStatus">
           Simpan & Kirim Notif WA
         </button>
       </div>
     </div>
   </div>
-  
-<script src="assets/js/supabase.min.js"></script>
-<script src="assets/js/supabase.js"></script>
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/admin.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', initAdmin);
-</script>
+
+  <script type="module">
+    import { initAdmin, logout } from './assets/js/admin.js';
+    import { signOut }           from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+    import { auth }              from './assets/js/firebase.js';
+
+    document.addEventListener('DOMContentLoaded', initAdmin);
+    document.getElementById('btnLogout').addEventListener('click', async function() {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    });
+  </script>
+
 </body>
 </html>

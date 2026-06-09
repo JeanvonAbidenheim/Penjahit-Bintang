@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav class="sistem-navbar">
     <a href="index.html" class="sistem-logo">
       <span>✦</span> Penjahit <em>Bintang</em>
@@ -18,77 +17,58 @@
     </div>
   </nav>
 
-  <!-- Konten auth -->
   <div class="auth-wrap">
     <div class="auth-card">
 
-      <!-- Logo -->
       <div class="auth-logo">
         <h1>Penjahit <em>Bintang</em></h1>
         <p>Masuk atau buat akun untuk mulai memesan</p>
       </div>
 
-      <!-- Tab toggle -->
       <div class="auth-tabs">
         <button class="auth-tab tab-aktif" id="tabLogin">Masuk</button>
         <button class="auth-tab" id="tabDaftar">Daftar</button>
       </div>
 
-      <!-- ── Form Login ── -->
+      <!-- Form Login -->
       <form class="auth-form" id="formLogin">
         <div id="pesan-login" class="auth-pesan"></div>
-
         <div class="form-group">
           <label for="loginEmail">Email</label>
-          <input type="email" id="loginEmail" name="email"
-            placeholder="email@kamu.com" required autocomplete="email" />
+          <input type="email" id="loginEmail" placeholder="email@kamu.com" required />
         </div>
-
         <div class="form-group">
           <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" name="password"
-            placeholder="••••••••" required autocomplete="current-password" />
+          <input type="password" id="loginPassword" placeholder="••••••••" required />
         </div>
-
         <button type="submit" class="btn-auth" data-teks="Masuk">
           <span class="btn-teks">Masuk</span>
         </button>
       </form>
 
-      <!-- ── Form Daftar ── -->
+      <!-- Form Daftar -->
       <form class="auth-form hidden" id="formDaftar">
         <div id="pesan-daftar" class="auth-pesan"></div>
-
         <div class="form-group">
           <label for="daftarNama">Nama Lengkap</label>
-          <input type="text" id="daftarNama" name="nama"
-            placeholder="Nama lengkap kamu" required />
+          <input type="text" id="daftarNama" placeholder="Nama lengkap kamu" required />
         </div>
-
         <div class="form-group">
           <label for="daftarHp">Nomor WhatsApp</label>
-          <input type="tel" id="daftarHp" name="hp"
-            placeholder="08xxxxxxxxxx" required />
+          <input type="tel" id="daftarHp" placeholder="08xxxxxxxxxx" required />
         </div>
-
         <div class="form-group">
           <label for="daftarEmail">Email</label>
-          <input type="email" id="daftarEmail" name="email"
-            placeholder="email@kamu.com" required autocomplete="email" />
+          <input type="email" id="daftarEmail" placeholder="email@kamu.com" required />
         </div>
-
         <div class="form-group">
           <label for="daftarPassword">Password</label>
-          <input type="password" id="daftarPassword" name="password"
-            placeholder="Minimal 6 karakter" required autocomplete="new-password" />
+          <input type="password" id="daftarPassword" placeholder="Minimal 6 karakter" required />
         </div>
-
         <div class="form-group">
           <label for="daftarKonfirm">Konfirmasi Password</label>
-          <input type="password" id="daftarKonfirm" name="konfirm"
-            placeholder="Ulangi password" required autocomplete="new-password" />
+          <input type="password" id="daftarKonfirm" placeholder="Ulangi password" required />
         </div>
-
         <button type="submit" class="btn-auth" data-teks="Buat Akun">
           <span class="btn-teks">Buat Akun</span>
         </button>
@@ -97,11 +77,8 @@
     </div>
   </div>
 
-  <!-- Supabase CDN -->
-  <script src="assets/js/supabase.min.js"></script>
-  <script src="assets/js/supabase.js"></script>
-  <script src="assets/js/auth.js"></script>
-  <script>
+  <script type="module">
+    import { initAuth } from './assets/js/auth.js';
     document.addEventListener('DOMContentLoaded', initAuth);
   </script>
 
