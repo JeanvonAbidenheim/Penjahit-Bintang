@@ -1,121 +1,115 @@
 /* ==============================================
-   pesan.js — Logic form booking pesanan baru
-   Dipakai di halaman pesan.html
+   pesan.js — Buat pesanan baru
    ============================================== */
 
-function initHalamanPesan() {
-  const form = document.getElementById('formPesan');
-  if (!form) return;
+import { auth, db }                             from './firebase.js';
+import { onAuthStateChanged }                   from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+import { ref, push, get }                       from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
 
-  // Wajib login dulu
-  db.auth.getSession().then(async ({ data }) => {
-    if (!data.session) {
+
+function initHalamanPesan() {
+  onAuthStateChanged(auth, async function(user) {
+    if (!user) {
       window.location.href = 'auth.html';
       return;
     }
 
-    // Tampilkan nama user di navbar
-    const user = data.session.user;
-    const { data: profil } = await db
-      .from('profiles')
-      .select('nama')
-      .eq('id', user.id)
-      .single();
+    // Ambil nama user
+    var snap = await get(ref(db, 'users/' + user.uid));
+    if (snap.exists()) {
+      var profil = snap.val();
+      var elNama = document.getElementById('namaUser');
+      if (elNama) elNama.textContent = profil.nama;
+    }
 
-    const elNama = document.getElementById('namaUser');
-    if (elNama && profil) elNama.textContent = profil.nama;
-
-    // Inisialisasi form
-    initFormPesan(form, user);
+    initFormPesan(user);
   });
 }
 
 
-function initFormPesan(form, user) {
-  // Isi estimasi tanggal minimal (besok)
-  const inputTanggal = form.querySelector('#estimasiAmbil');
-  if (inputTanggal) {
-    const besok = new Date();
-    besok.setDate(besok.getDate() + 3); // minimal 3 hari dari sekarang
-    inputTanggal.min = besok.toISOString().split('T')[0];
+function initFormPesan(user) {
+  var form = document.getElementById('formPesan');
+  if (!form) return;
+
+  // Set minimal tanggal ambil = 3 hari dari sekarang
+  var inputTgl = document.getElementById('estimasiAmbil');
+  if (inputTgl) {
+    var besok = new Date();
+    besok.setDate(besok.getDate() + 3);
+    inputTgl.min = besok.toISOString().split('T')[0];
   }
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const layanan    = form.querySelector('#layanan').value;
-    const deskripsi  = form.querySelector('#deskripsi').value.trim();
-    const ambil      = form.querySelector('#estimasiAmbil').value;
+    var layanan   = document.getElementById('layanan').value;
+    var deskripsi = document.getElementById('deskripsi').value.trim();
+    var ambil     = document.getElementById('estimasiAmbil').value;
 
     if (!layanan || !deskripsi) {
-      tampilNotifPesan('Pilih layanan dan isi deskripsi terlebih dahulu!', 'error');
+      tampilNotif('Pilih layanan dan isi deskripsi!', 'error');
       return;
     }
 
-    setLoadingPesan(true);
+    setLoading(true);
 
-    // Generate nomor order unik: PB-YYYYMMDD-XXXX
-    const nomorOrder = generateNomorOrder();
+    var nomorOrder = buatNomorOrder();
 
-    const { error } = await db.from('pesanan').insert({
-      nomor_order:       nomorOrder,
-      user_id:           user.id,
-      layanan,
-      deskripsi,
-      estimasi_selesai:  ambil || null,
-      status:            'menunggu_konfirmasi'
-    });
+    try {
+      await push(ref(db, 'pesanan'), {
+        nomorOrder:      nomorOrder,
+        userId:          user.uid,
+        layanan:         layanan,
+        deskripsi:       deskripsi,
+        estimasiAmbil:   ambil || null,
+        status:          'menunggu_konfirmasi',
+        catatanAdmin:    null,
+        createdAt:       Date.now(),
+        updatedAt:       Date.now()
+      });
 
-    setLoadingPesan(false);
+      setLoading(false);
+      tampilSukses(nomorOrder);
 
-    if (error) {
-      tampilNotifPesan('Gagal membuat pesanan: ' + error.message, 'error');
-      return;
+    } catch (err) {
+      setLoading(false);
+      tampilNotif('Gagal membuat pesanan: ' + err.message, 'error');
     }
-
-    // Sukses → tampilkan nomor order & redirect
-    tampilSuksesPesan(nomorOrder);
   });
 }
 
 
-/* ── Generate nomor order unik ── */
-function generateNomorOrder() {
-  const now    = new Date();
-  const tgl    = now.toISOString().slice(0, 10).replace(/-/g, '');
-  const acak   = Math.random().toString(36).slice(2, 6).toUpperCase();
-  return `PB-${tgl}-${acak}`;
+function buatNomorOrder() {
+  var now  = new Date();
+  var tgl  = now.toISOString().slice(0, 10).replace(/-/g, '');
+  var acak = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return 'PB-' + tgl + '-' + acak;
 }
 
-
-/* ── Tampil sukses + nomor order ── */
-function tampilSuksesPesan(nomorOrder) {
-  const formWrap  = document.getElementById('formWrap');
-  const sukses    = document.getElementById('pesanSukses');
-  const elNomor   = document.getElementById('nomorOrderSukses');
-
+function tampilSukses(nomorOrder) {
+  var formWrap = document.getElementById('formWrap');
+  var sukses   = document.getElementById('pesanSukses');
+  var elNomor  = document.getElementById('nomorOrderSukses');
   if (formWrap) formWrap.style.display = 'none';
   if (sukses)   sukses.style.display   = 'flex';
   if (elNomor)  elNomor.textContent    = nomorOrder;
 }
 
-
-/* ── Loading state tombol ── */
-function setLoadingPesan(loading) {
-  const btn  = document.querySelector('#formPesan button[type="submit"]');
-  const teks = document.querySelector('#formPesan .btn-teks');
+function setLoading(loading) {
+  var btn  = document.querySelector('#formPesan button[type="submit"]');
+  var teks = document.querySelector('#formPesan .btn-teks');
   if (!btn) return;
   btn.disabled = loading;
   if (teks) teks.textContent = loading ? 'Memproses...' : 'Buat Pesanan';
 }
 
-
-/* ── Notif error/sukses kecil ── */
-function tampilNotifPesan(pesan, tipe) {
-  const el = document.getElementById('pesanNotif');
+function tampilNotif(pesan, tipe) {
+  var el = document.getElementById('pesanNotif');
   if (!el) return;
   el.textContent   = pesan;
-  el.className     = `auth-pesan ${tipe}`;
+  el.className     = 'auth-pesan ' + tipe;
   el.style.display = 'block';
-  setTimeout(() => { el.style.display = 'none'; }, 4000);
+  setTimeout(function() { el.style.display = 'none'; }, 4000);
 }
+
+export { initHalamanPesan };

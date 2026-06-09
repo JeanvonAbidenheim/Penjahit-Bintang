@@ -1,144 +1,135 @@
 /* ==============================================
    admin.js — Dashboard admin
-   WAJIB GANTI:
-   1. EMAIL_ADMIN → email yang kamu pakai login
-   2. URL notif WA → URL Netlify websitemu
+   WAJIB GANTI: EMAIL_ADMIN dengan emailmu
    ============================================== */
 
-const EMAIL_ADMIN = 'penjahitbintang@gmail.com'; // ← GANTI INI
+import { auth, db }                             from './firebase.js';
+import { onAuthStateChanged, signOut }          from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+import { ref, onValue, get, update }            from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
+
+const EMAIL_ADMIN = 'emailadmin@gmail.com'; // ← GANTI INI
 
 
-/* ── INISIALISASI ── */
 function initAdmin() {
-  db.auth.getSession().then(async function(result) {
-    var data = result.data;
+  onAuthStateChanged(auth, async function(user) {
 
-    if (!data.session) {
+    // Belum login
+    if (!user) {
       window.location.href = 'auth.html';
       return;
     }
 
-    var email = data.session.user.email;
-
-    if (email.toLowerCase() !== EMAIL_ADMIN.toLowerCase()) {
+    // Bukan admin
+    if (user.email.toLowerCase() !== EMAIL_ADMIN.toLowerCase()) {
       document.body.innerHTML =
         '<div style="display:flex;align-items:center;justify-content:center;' +
         'min-height:100vh;font-family:sans-serif;flex-direction:column;gap:1rem;background:#f4f4f0">' +
         '<p style="font-size:3rem">🚫</p>' +
-        '<p style="font-weight:700;font-size:1.1rem">Akses ditolak. Halaman ini hanya untuk admin.</p>' +
+        '<p style="font-weight:700">Akses ditolak. Halaman ini hanya untuk admin.</p>' +
         '<a href="index.html" style="color:#c9a84c;font-weight:600">← Kembali ke website</a>' +
         '</div>';
       return;
     }
 
+    // Tampil email admin
     var elEmail = document.getElementById('emailAdmin');
-    if (elEmail) elEmail.textContent = email;
+    if (elEmail) elEmail.textContent = user.email;
 
-    await muatSemuaPesanan();
-    await muatStatistik();
+    // Pantau semua pesanan secara realtime
+    onValue(ref(db, 'pesanan'), async function(snapshot) {
+      await renderTabelAdmin(snapshot);
+      hitungStatistik(snapshot);
+    });
 
-    db.channel('admin-pesanan')
-      .on('postgres_changes', {
-        event: '*', schema: 'public', table: 'pesanan'
-      }, async function() {
-        await muatSemuaPesanan();
-        await muatStatistik();
-      })
-      .subscribe();
-
-    var filterBtns = document.querySelectorAll('.filter-status');
-    filterBtns.forEach(function(btn) {
+    // Filter tombol
+    document.querySelectorAll('.filter-status').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        filterBtns.forEach(function(b) { b.classList.remove('aktif'); });
+        document.querySelectorAll('.filter-status').forEach(function(b) {
+          b.classList.remove('aktif');
+        });
         btn.classList.add('aktif');
-        var status = btn.dataset.status;
-        muatSemuaPesanan(status && status !== '' ? status : null);
       });
     });
   });
 }
 
 
-/* ── MUAT SEMUA PESANAN ── */
-async function muatSemuaPesanan(filterStatus) {
-  filterStatus = filterStatus || null;
-
+/* ── RENDER TABEL ADMIN ── */
+async function renderTabelAdmin(snapshot) {
   var container = document.getElementById('tabelPesanan');
   if (!container) return;
 
-  container.innerHTML = '<tr><td colspan="7" class="loading-td">⏳ Memuat data...</td></tr>';
-
-  var query = db
-    .from('pesanan')
-    .select('*, profiles(nama, no_hp)')
-    .order('created_at', { ascending: false });
-
-  if (filterStatus) {
-    query = query.eq('status', filterStatus);
-  }
-
-  var result = await query;
-  var pesanan = result.data;
-  var error   = result.error;
-
-  if (error) {
-    console.error('Error muat pesanan:', error.message, error.code);
-    container.innerHTML =
-      '<tr><td colspan="7" class="loading-td" style="color:#dc2626">' +
-      '❌ Gagal muat data: ' + error.message +
-      '</td></tr>';
-    return;
-  }
-
-  if (!pesanan || pesanan.length === 0) {
+  if (!snapshot.exists()) {
     container.innerHTML = '<tr><td colspan="7" class="loading-td">📭 Belum ada pesanan masuk.</td></tr>';
     return;
   }
 
+  // Ambil semua pesanan + data user sekaligus
+  var pesanan = [];
+  var promises = [];
+
+  snapshot.forEach(function(child) {
+    var p = Object.assign({ id: child.key }, child.val());
+    pesanan.push(p);
+    // Ambil nama & HP user untuk tiap pesanan
+    promises.push(
+      get(ref(db, 'users/' + p.userId)).then(function(snap) {
+        if (snap.exists()) {
+          p.namaUser = snap.val().nama;
+          p.hpUser   = snap.val().no_hp;
+        }
+      })
+    );
+  });
+
+  await Promise.all(promises);
+
+  // Urutkan terbaru dulu
+  pesanan.sort(function(a, b) { return b.createdAt - a.createdAt; });
+
   container.innerHTML = pesanan.map(function(p) { return buatBarisAdmin(p); }).join('');
 
+  // Event tombol update
   container.querySelectorAll('.btn-update-status').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      bukaModalUpdate(btn.dataset.id, btn.dataset.status);
+      bukaModal(btn.dataset.id, btn.dataset.status, btn.dataset.hp, btn.dataset.nama, btn.dataset.nomor);
     });
   });
 }
 
 
-/* ── BUAT SATU BARIS TABEL ── */
+/* ── BUAT BARIS TABEL ── */
 function buatBarisAdmin(p) {
-  var info  = infoStatus(p.status);
-  var label = info.label;
-  var warna = info.warna;
-  var icon  = info.icon;
-
-  var tgl = new Date(p.created_at).toLocaleDateString('id-ID', {
+  var info = infoStatus(p.status);
+  var tgl  = new Date(p.createdAt).toLocaleDateString('id-ID', {
     day: 'numeric', month: 'short', year: 'numeric'
   });
 
-  var nama = (p.profiles && p.profiles.nama) ? p.profiles.nama : '—';
-  var hp   = (p.profiles && p.profiles.no_hp) ? p.profiles.no_hp : '';
-
   return '<tr>' +
-    '<td class="td-nomor">' + p.nomor_order + '</td>' +
-    '<td>' + nama + '<br/><small style="color:#6b6b6b">' + hp + '</small></td>' +
+    '<td class="td-nomor">' + p.nomorOrder + '</td>' +
+    '<td>' + (p.namaUser || '—') + '<br/><small style="color:#6b6b6b">' + (p.hpUser || '') + '</small></td>' +
     '<td>' + p.layanan + '</td>' +
     '<td><small>' + (p.deskripsi || '—') + '</small></td>' +
-    '<td><span class="status-badge-sm" style="background:' + warna + '">' + icon + ' ' + label + '</span></td>' +
+    '<td><span class="status-badge-sm" style="background:' + info.warna + '">' + info.icon + ' ' + info.label + '</span></td>' +
     '<td><small>' + tgl + '</small></td>' +
-    '<td><button class="btn-update-status" data-id="' + p.id + '" data-status="' + p.status + '">Update</button></td>' +
+    '<td><button class="btn-update-status" ' +
+      'data-id="'    + p.id        + '" ' +
+      'data-status="'+ p.status    + '" ' +
+      'data-hp="'    + (p.hpUser  || '') + '" ' +
+      'data-nama="'  + (p.namaUser|| '') + '" ' +
+      'data-nomor="' + p.nomorOrder+ '">' +
+      'Update' +
+    '</button></td>' +
     '</tr>';
 }
 
 
 /* ── MODAL UPDATE STATUS ── */
-function bukaModalUpdate(id, statusSaat) {
-  var modal = document.getElementById('modalUpdate');
-  if (!modal) return;
-
-  var select    = document.getElementById('selectStatus');
-  var catatan   = document.getElementById('catatanAdmin');
-  var estimasi  = document.getElementById('estimasiAdmin');
+function bukaModal(id, statusSaat, hp, nama, nomor) {
+  var modal    = document.getElementById('modalUpdate');
+  var select   = document.getElementById('selectStatus');
+  var catatan  = document.getElementById('catatanAdmin');
+  var estimasi = document.getElementById('estimasiAdmin');
   var btnSimpan = document.getElementById('btnSimpanStatus');
   var btnTutup  = modal.querySelector('.modal-tutup');
   var backdrop  = modal.querySelector('.modal-backdrop');
@@ -149,71 +140,53 @@ function bukaModalUpdate(id, statusSaat) {
 
   modal.style.display = 'flex';
 
-  function tutupModal() {
-    modal.style.display = 'none';
-  }
-
-  if (btnTutup)  btnTutup.onclick  = tutupModal;
-  if (backdrop)  backdrop.onclick  = tutupModal;
+  function tutup() { modal.style.display = 'none'; }
+  if (btnTutup) btnTutup.onclick = tutup;
+  if (backdrop) backdrop.onclick = tutup;
 
   if (btnSimpan) {
     btnSimpan.onclick = async function() {
-      var statusBaru  = select  ? select.value         : statusSaat;
-      var catatanVal  = catatan ? catatan.value.trim()  : '';
+      var statusBaru  = select   ? select.value        : statusSaat;
+      var catatanVal  = catatan  ? catatan.value.trim() : '';
       var estimasiVal = estimasi ? estimasi.value       : '';
 
       btnSimpan.textContent = 'Menyimpan...';
       btnSimpan.disabled    = true;
 
-      await updateStatusPesanan(id, statusBaru, catatanVal, estimasiVal);
+      await simpanUpdate(id, statusBaru, catatanVal, estimasiVal, hp, nama, nomor);
 
       btnSimpan.textContent = 'Simpan & Kirim Notif WA';
       btnSimpan.disabled    = false;
-      tutupModal();
+      tutup();
     };
   }
 }
 
 
-/* ── UPDATE STATUS KE DATABASE ── */
-async function updateStatusPesanan(id, status, catatan, estimasi) {
-  var payload = { status: status };
-  if (catatan)  payload.catatan_admin    = catatan;
-  if (estimasi) payload.estimasi_selesai = estimasi;
+/* ── SIMPAN UPDATE STATUS ── */
+async function simpanUpdate(id, status, catatan, estimasi, hp, nama, nomor) {
+  var payload = {
+    status:    status,
+    updatedAt: Date.now()
+  };
+  if (catatan)  payload.catatanAdmin   = catatan;
+  if (estimasi) payload.estimasiAmbil  = estimasi;
 
-  var result = await db.from('pesanan').update(payload).eq('id', id);
-
-  if (result.error) {
-    alert('Gagal update status: ' + result.error.message);
-    return;
+  try {
+    await update(ref(db, 'pesanan/' + id), payload);
+    kirimNotifWA(hp, nama, nomor, status);
+  } catch (err) {
+    alert('Gagal update: ' + err.message);
   }
-
-  await kirimNotifWA(id, status);
-  await muatSemuaPesanan();
-  await muatStatistik();
 }
 
 
-/* ── KIRIM NOTIFIKASI WA KE PELANGGAN ── */
-async function kirimNotifWA(pesananId, statusBaru) {
-  var result = await db
-    .from('pesanan')
-    .select('nomor_order, profiles(nama, no_hp)')
-    .eq('id', pesananId)
-    .maybeSingle();
+/* ── KIRIM NOTIF WA ── */
+function kirimNotifWA(hp, nama, nomor, status) {
+  if (!hp) return;
 
-  var p     = result.data;
-  var error = result.error;
-
-  if (error || !p || !p.profiles || !p.profiles.no_hp) {
-    console.warn('Tidak bisa kirim notif WA:', error ? error.message : 'data tidak lengkap');
-    return;
-  }
-
-  var info  = infoStatus(statusBaru);
-  var noHp  = p.profiles.no_hp.replace(/[^0-9]/g, '');
-  var nama  = p.profiles.nama;
-  var nomor = p.nomor_order;
+  var info  = infoStatus(status);
+  var noHp  = hp.replace(/[^0-9]/g, '');
 
   var pesan =
     'Halo ' + nama + '! 👋\n\n' +
@@ -222,27 +195,33 @@ async function kirimNotifWA(pesananId, statusBaru) {
     info.icon + ' Status: *' + info.label + '*\n\n' +
     'Pantau pesanan di:\n' +
     'https://penjahit-bintang.vercel.app/status.html\n\n' + // ← GANTI URL
-    'Terima kasih sudah mempercayai kami! 🙏';
+    'Terima kasih! 🙏';
 
   window.open(
     'https://wa.me/' + noHp + '?text=' + encodeURIComponent(pesan),
-    '_blank',
-    'noopener'
+    '_blank', 'noopener'
   );
 }
 
 
-/* ── STATISTIK RINGKASAN ── */
-async function muatStatistik() {
-  var result = await db.from('pesanan').select('status');
-  var data   = result.data;
+/* ── STATISTIK ── */
+function hitungStatistik(snapshot) {
+  if (!snapshot.exists()) return;
 
-  if (!data) return;
+  var total = 0, menunggu = 0, diproses = 0, selesai = 0;
 
-  setText('statTotal',    data.length);
-  setText('statMenunggu', data.filter(function(p) { return p.status === 'menunggu_konfirmasi'; }).length);
-  setText('statDiproses', data.filter(function(p) { return p.status === 'diproses'; }).length);
-  setText('statSelesai',  data.filter(function(p) { return p.status === 'selesai' || p.status === 'diambil'; }).length);
+  snapshot.forEach(function(child) {
+    var s = child.val().status;
+    total++;
+    if (s === 'menunggu_konfirmasi') menunggu++;
+    if (s === 'diproses')            diproses++;
+    if (s === 'selesai' || s === 'diambil') selesai++;
+  });
+
+  setText('statTotal',    total);
+  setText('statMenunggu', menunggu);
+  setText('statDiproses', diproses);
+  setText('statSelesai',  selesai);
 }
 
 function setText(id, val) {
@@ -262,3 +241,12 @@ function infoStatus(status) {
   };
   return map[status] || { label: status, warna: '#6b7280', icon: '❓' };
 }
+
+
+/* ── LOGOUT ── */
+async function logout() {
+  await signOut(auth);
+  window.location.href = 'index.html';
+}
+
+export { initAdmin, logout };
