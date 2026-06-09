@@ -1,7 +1,7 @@
 /* ==============================================
-   sistem.css — Style untuk halaman sistem
-   auth.html, pesan.html, status.html, admin.html
-   ============================================== */
+sistem.css — Style untuk halaman sistem
+auth.html, pesan.html, status.html, admin.html
+============================================== */
 
 /* ── Import variabel dari base.css ── */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700&family=Karla:wght@300;400;500;600;700&display=swap');
@@ -13,9 +13,9 @@
   --abu-terang:       #6b6b6b;
   --abu-super-terang: #f4f4f0;
   --border:           #e8e5e0;
-  --emas:             #c9a84c;
-  --emas-gelap:       #a0782a;
-  --emas-muda:        rgba(201,168,76,0.10);
+  --emas:             #4cbfc9;
+  --emas-gelap:       #2a9ea0;
+  --emas-muda:        rgba(76, 197, 201, 0.1);
   --font-display:     'Cormorant Garamond', Georgia, serif;
   --font-body:        'Karla', sans-serif;
   --radius-kecil:     8px;
