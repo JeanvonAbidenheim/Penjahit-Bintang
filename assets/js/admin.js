@@ -7,7 +7,7 @@ import { auth, db }                             from './firebase.js';
 import { onAuthStateChanged, signOut }          from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, onValue, get, update }            from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
 
-const EMAIL_ADMIN = 'emailadmin@gmail.com'; // ← GANTI INI
+const EMAIL_ADMIN = 'penjahitbintang@gmail.com'; // ← GANTI INI
 
 
 function initAdmin() {
