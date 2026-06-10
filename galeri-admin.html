@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kelola Galeri — Penjahit Bintang</title>
+  <link rel="stylesheet" href="assets/css/sistem.css" />
+  <link rel="stylesheet" href="assets/css/galeri-admin.css" />
+</head>
+<body>
+
+  <nav class="sistem-navbar">
+    <a href="index.html" class="sistem-logo">
+      <span>✦</span> Penjahit <em>Bintang</em>
+    </a>
+    <div class="sistem-nav-right">
+      <span class="sistem-user">Admin: <strong id="emailAdmin">...</strong></span>
+      <a href="admin.html">← Dashboard</a>
+      <button class="btn-logout" id="btnLogout">Keluar</button>
+    </div>
+  </nav>
+
+  <div class="sistem-container-wide">
+
+    <div class="galeri-admin-header">
+      <div>
+        <h1 class="sistem-judul">Kelola Galeri</h1>
+        <p class="sistem-subjudul">Total <strong id="totalFoto">0</strong> foto tersimpan</p>
+      </div>
+    </div>
+
+    <div class="galeri-admin-layout">
+
+      <!-- Form Upload -->
+      <div class="upload-card">
+        <h3 class="upload-judul">Upload Foto Baru</h3>
+        <div id="uploadNotif" class="auth-pesan"></div>
+
+        <form id="formUpload">
+          <!-- Area pilih foto -->
+          <div class="drop-area" onclick="document.getElementById('inputFoto').click()">
+            <div id="previewWrap" style="display:none">
+              <img id="previewImg" src="" alt="Preview" class="preview-img" />
+            </div>
+            <div id="dropPlaceholder">
+              <span class="drop-icon">📸</span>
+              <p class="drop-teks">Klik untuk pilih foto</p>
+              <p class="drop-sub">JPG, PNG, WebP — maks 5MB</p>
+            </div>
+          </div>
+          <input type="file" id="inputFoto" accept="image/*" style="display:none" />
+
+          <!-- Progress bar -->
+          <div id="progressWrap" style="display:none;margin:0.75rem 0">
+            <div class="progress-upload-wrap">
+              <div class="progress-upload-bar" id="progressBar" style="width:0%"></div>
+            </div>
+            <p class="progress-upload-teks" id="progressTeks">0%</p>
+          </div>
+
+          <div class="form-group" style="margin-top:1rem">
+            <label for="uploadNama">Nama / Judul Foto *</label>
+            <input type="text" id="uploadNama" placeholder="Contoh: Kemeja Batik Custom" required />
+          </div>
+
+          <div class="form-group">
+            <label for="uploadKategori">Kategori *</label>
+            <select id="uploadKategori" required>
+              <option value="" disabled selected>-- Pilih kategori --</option>
+              <option value="pria">Pria</option>
+              <option value="wanita">Wanita</option>
+              <option value="permak">Permak</option>
+              <option value="seragam">Seragam</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="uploadBadge">Badge (opsional)</label>
+            <select id="uploadBadge">
+              <option value="">Tidak ada badge</option>
+              <option value="baru">✦ Baru</option>
+              <option value="terlaris">🔥 Terlaris</option>
+              <option value="promo">🏷 Promo</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-upload" id="btnUpload">
+            <span id="btnUploadTeks">Upload Foto</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Grid galeri -->
+      <div class="galeri-admin-wrap">
+        <div class="loading-state" id="loadingGaleri" style="display:flex">
+          <p>⏳ Memuat galeri...</p>
+        </div>
+        <div class="kosong-state" id="galeriKosong">
+          <div class="kosong-icon">🖼️</div>
+          <h3 style="font-family:var(--font-display);font-size:1.25rem">Galeri Masih Kosong</h3>
+          <p>Upload foto pertamamu sekarang!</p>
+        </div>
+        <div class="grid-galeri-admin" id="gridGaleriAdmin"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal edit badge -->
+  <div class="modal-wrap" id="modalBadge">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <button class="modal-tutup">✕</button>
+      <h3>Edit Badge Foto</h3>
+      <div class="modal-form">
+        <div class="form-group">
+          <label for="selectBadge">Badge</label>
+          <select id="selectBadge">
+            <option value="">Tidak ada badge</option>
+            <option value="baru">✦ Baru</option>
+            <option value="terlaris">🔥 Terlaris</option>
+            <option value="promo">🏷 Promo</option>
+          </select>
+        </div>
+        <button class="btn-simpan" id="btnSimpanBadge">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initGaleriAdmin } from './assets/js/galeri-admin.js';
+    import { signOut }         from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+    import { auth }            from './assets/js/firebase.js';
+
+    document.addEventListener('DOMContentLoaded', initGaleriAdmin);
+    document.getElementById('btnLogout').addEventListener('click', async function() {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    });
+  </script>
+
+</body>
+</html>
