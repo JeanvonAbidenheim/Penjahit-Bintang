@@ -13,9 +13,9 @@
   --abu-terang:       #6b6b6b;
   --abu-super-terang: #f4f4f0;
   --border:           #e8e5e0;
-  --emas:             #c9a84c;
-  --emas-gelap:       #a0782a;
-  --emas-muda:        rgba(201,168,76,0.10);
+  --emas:             #4cc9bf;
+  --emas-gelap:       #2a90a0;
+  --emas-muda:        rgba(76, 197, 201, 0.1);
   --font-display:     'Cormorant Garamond', Georgia, serif;
   --font-body:        'Karla', sans-serif;
   --radius-kecil:     8px;
@@ -449,7 +449,7 @@ a { text-decoration: none; color: inherit; }
 
 .catatan .kartu-val {
   background: #fffbeb;
-  border: 1px solid #fef08a;
+  border: 1px solid #8afef2;
   padding: 0.4rem 0.75rem;
   border-radius: var(--radius-kecil);
   font-size: 0.82rem;
