@@ -1,15 +1,10 @@
-/* ==============================================
-   auth.js — Login & daftar pakai Firebase Auth
-   ============================================== */
-
 import { auth, db }                             from './firebase.js';
 import { createUserWithEmailAndPassword,
          signInWithEmailAndPassword,
          onAuthStateChanged }                   from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, set }                             from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
 
-
-/* ── INISIALISASI ── */
+// INISIALISASI 
 function initAuth() {
   // Kalau sudah login → langsung ke status
   onAuthStateChanged(auth, function(user) {
@@ -28,8 +23,7 @@ function initAuth() {
   initFormDaftar();
 }
 
-
-/* ── FORM LOGIN ── */
+// FORM LOGIN 
 function initFormLogin() {
   var form = document.getElementById('formLogin');
   if (!form) return;
@@ -56,8 +50,7 @@ function initFormLogin() {
   });
 }
 
-
-/* ── FORM DAFTAR ── */
+// FORM DAFTAR 
 function initFormDaftar() {
   var form = document.getElementById('formDaftar');
   if (!form) return;
@@ -113,15 +106,14 @@ function initFormDaftar() {
   });
 }
 
-
-/* ── LOGOUT ── */
+// LOGOUT
 async function logout() {
   await auth.signOut();
   window.location.href = 'index.html';
 }
 
 
-/* ── HELPER ── */
+// HELPER 
 function toggleTab(tab) {
   var formLogin  = document.getElementById('formLogin');
   var formDaftar = document.getElementById('formDaftar');
@@ -157,5 +149,4 @@ function tampilPesan(form, tipe, pesan) {
   el.style.display = 'block';
   setTimeout(function() { el.style.display = 'none'; }, 4000);
 }
-
 export { initAuth, logout };
