@@ -1,9 +1,3 @@
-/* ==============================================
-   galeri-admin.js — Kelola galeri
-   Upload foto → Cloudinary (simpel, tanpa rules)
-   Simpan data → Firebase Realtime Database
-   ============================================== */
-
 import { auth, db }                              from './firebase.js';
 import { onAuthStateChanged, signOut }           from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, push, onValue, remove, update }    from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
@@ -12,8 +6,7 @@ const EMAIL_ADMIN      = 'penjahitbintangnia@gmail.com';  // ← GANTI INI
 const CLOUDINARY_URL   = 'https://api.cloudinary.com/v1_1/dhi4xmvsr/image/upload';
 const CLOUDINARY_PRESET = 'penjahit-bintang';
 
-
-/* ── INISIALISASI ── */
+// INISIALISASI
 function initGaleriAdmin() {
   onAuthStateChanged(auth, function(user) {
     if (!user) { window.location.href = 'auth.html'; return; }
@@ -31,8 +24,7 @@ function initGaleriAdmin() {
   });
 }
 
-
-/* ── FORM UPLOAD ── */
+// FORM UPLOAD
 function initFormUpload() {
   var form        = document.getElementById('formUpload');
   var inputFoto   = document.getElementById('inputFoto');
@@ -150,8 +142,7 @@ function uploadKeCloudinary(formData) {
   });
 }
 
-
-/* ── MUAT GALERI ADMIN ── */
+// MUAT GALERI ADMIN
 function muatGaleriAdmin() {
   var container = document.getElementById('gridGaleriAdmin');
   var loading   = document.getElementById('loadingGaleri');
@@ -199,8 +190,7 @@ function muatGaleriAdmin() {
   });
 }
 
-
-/* ── KARTU GALERI ADMIN ── */
+// KARTU GALERI ADMIN 
 function kartuGaleriAdmin(item) {
   var badgeHtml = item.badge && item.badge !== 'null'
     ? '<span class="badge-foto badge-' + item.badge + '">' +
@@ -226,8 +216,7 @@ function kartuGaleriAdmin(item) {
   '</div>';
 }
 
-
-/* ── HAPUS FOTO ── */
+// HAPUS FOTO 
 async function hapusFoto(id) {
   if (!confirm('Yakin mau hapus foto ini?')) return;
   try {
@@ -238,8 +227,7 @@ async function hapusFoto(id) {
   }
 }
 
-
-/* ── MODAL EDIT BADGE ── */
+// MODAL EDIT BADGE
 function bukaModalBadge(id, badgeSaat) {
   var modal     = document.getElementById('modalBadge');
   var select    = document.getElementById('selectBadge');
@@ -266,8 +254,7 @@ function bukaModalBadge(id, badgeSaat) {
   }
 }
 
-
-/* ── HELPER ── */
+// HELPER
 function setLoadingUpload(loading) {
   var btn      = document.getElementById('btnUpload');
   var teks     = document.getElementById('btnUploadTeks');
@@ -304,5 +291,4 @@ function setText(id, val) {
   var el = document.getElementById(id);
   if (el) el.textContent = val;
 }
-
 export { initGaleriAdmin };
