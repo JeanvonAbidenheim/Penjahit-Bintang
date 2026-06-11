@@ -1,11 +1,6 @@
-/* ==============================================
-   pesan.js — Buat pesanan baru
-   ============================================== */
-
 import { auth, db }                             from './firebase.js';
 import { onAuthStateChanged }                   from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, push, get }                       from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
-
 
 function initHalamanPesan() {
   onAuthStateChanged(auth, async function(user) {
@@ -25,7 +20,6 @@ function initHalamanPesan() {
     initFormPesan(user);
   });
 }
-
 
 function initFormPesan(user) {
   var form = document.getElementById('formPesan');
@@ -78,7 +72,6 @@ function initFormPesan(user) {
   });
 }
 
-
 function buatNomorOrder() {
   var now  = new Date();
   var tgl  = now.toISOString().slice(0, 10).replace(/-/g, '');
@@ -111,5 +104,4 @@ function tampilNotif(pesan, tipe) {
   el.style.display = 'block';
   setTimeout(function() { el.style.display = 'none'; }, 4000);
 }
-
 export { initHalamanPesan };
