@@ -25,7 +25,6 @@ function tampilkanNotif(pesan, tipe = 'sukses') {
   }, 3000);
 }
 
-
 /**
  * @param {HTMLElement} el         - Elemen yang isinya mau dianimasikan
  * @param {string}      targetStr  - Nilai target, boleh ada sufiks (contoh: '500+', '4.9★')
@@ -51,7 +50,6 @@ function animasiCounter(el, targetStr, durasi = 1500) {
 
   requestAnimationFrame(update);
 }
-
 
 /**
  * @param {string} selektor   - CSS selector tujuan (contoh: '#layanan')
