@@ -6,6 +6,41 @@
 
 @media (max-width: 768px) {
 
+  /* ── NAVBAR: cegah Log In & hamburger bertabrakan ── */
+  .nav-container {
+    padding: 0 1rem;
+    gap: 0.5rem;
+  }
+
+  .nav-logo {
+    font-size: 1.05rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .logo-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Tombol Log In: perkecil, jangan didisplay none */
+  .navbar > .nav-container > a.btn-primary {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+
+  /* Hamburger selalu paling kanan, area klik aman */
+  .hamburger {
+    flex-shrink: 0;
+    margin-left: 0.25rem;
+    z-index: 1001;
+    position: relative;
+  }
+
   .nav-menu {
     position: fixed;
     top: var(--navbar-tinggi);
@@ -22,52 +57,92 @@
     transition: transform var(--transisi-sedang), opacity var(--transisi-sedang);
     z-index: 999;
   }
-
   .nav-menu.buka { transform: translateY(0); opacity: 1; }
   .nav-link      { width: 100%; padding: 0.75rem 1rem; border-radius: var(--radius-kecil); }
-  .nav-cta       { display: none; }
   .hamburger     { display: flex; }
 
+
+  /* ── HERO: cegah hero-card-float menutupi teks ── */
+  .hero {
+    padding-top: calc(var(--navbar-tinggi) + 1.5rem);
+    overflow-x: hidden;
+  }
+
   .hero-container { grid-template-columns: 1fr; gap: 2.5rem; text-align: center; }
-  .hero-visual    { order: -1; }
+
+  .hero-visual {
+    order: -1;
+    /* Beri ruang ekstra di bawah supaya kartu mengambang
+       tidak menimpa konten hero-content di bawahnya */
+    margin-bottom: 2.5rem;
+    min-height: 260px;
+    position: relative;
+  }
+
   .hero-card-main { width: 180px; height: 200px; }
   .visual-icon    { font-size: 3rem; }
   .hero-actions   { justify-content: center; }
   .hero-stats     { justify-content: center; }
 
-  .layanan-grid { grid-template-columns: 1fr; }
+  /* Kartu mengambang: posisi lebih aman & tidak menutupi apapun */
+  .hero-card-float {
+    font-size: 0.72rem;
+    padding: 0.4rem 0.75rem;
+    max-width: 42%;
+    white-space: normal;
+    line-height: 1.3;
+    z-index: 2;
+  }
 
+  .card-f1 { top: -10px; right: 0; }
+  .card-f2 { top: 50%; left: 0; transform: translateY(-50%); }
+  .card-f3 { bottom: -10px; right: 0; }
+
+
+  .layanan-grid { grid-template-columns: 1fr; }
   .galeri-masonry { columns: 1; }
   .galeri-toolbar { flex-direction: column; align-items: flex-start; }
-
   .lightbox-container { width: 96vw; max-height: 92vh; }
   .lightbox-nav       { display: none; }
   .lightbox-info      { padding: 0.75rem 1rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-
   .tentang-grid   { grid-template-columns: 1fr; gap: 2.5rem; }
   .tentang-visual { order: -1; }
-
   .testimoni-grid { grid-template-columns: 1fr; }
   .testi-featured { transform: none; }
   .testi-featured:hover { transform: translateY(-4px); }
-
   .kontak-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-
   .footer-top    { grid-template-columns: 1fr 1fr; }
   .footer-brand  { grid-column: 1 / -1; }
   .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
-
   .wa-float-label { display: none; }
   .wa-float       { padding: 0.875rem; border-radius: 50%; }
 }
 
 @media (max-width: 480px) {
   .section-container { padding: 3.5rem 1.25rem; }
-  .hero { padding: calc(var(--navbar-tinggi) + 2rem) 1.25rem 3rem; }
+  .hero { padding: calc(var(--navbar-tinggi) + 1.5rem) 1.25rem 3rem; }
 
-  .hero-card-float { font-size: 0.72rem; padding: 0.4rem 0.7rem; }
-  .card-f1, .card-f3 { right: -5px; }
-  .card-f2 { left: -10px; }
+  .hero-title { font-size: 1.85rem; line-height: 1.25; }
+  .hero-badge { font-size: 0.7rem; padding: 0.35rem 0.8rem; }
+
+  .hero-card-main { width: 150px; height: 170px; }
+  .visual-icon    { font-size: 2.5rem; }
+
+  .hero-card-float {
+    font-size: 0.65rem;
+    padding: 0.35rem 0.6rem;
+    max-width: 40%;
+  }
+
+  .card-f1 { right: 4px; top: -6px; }
+  .card-f2 { left: 4px; }
+  .card-f3 { right: 4px; bottom: -6px; }
 
   .footer-top { grid-template-columns: 1fr; }
+
+  /* Tombol Log In lebih kecil lagi di HP kecil */
+  .navbar > .nav-container > a.btn-primary {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
 }
