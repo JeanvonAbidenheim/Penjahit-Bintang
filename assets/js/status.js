@@ -1,12 +1,7 @@
-/* ==============================================
-   status.js — Cek status pesanan realtime
-   ============================================== */
-
 import { auth, db }                             from './firebase.js';
 import { onAuthStateChanged }                   from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, get, onValue, query,
          orderByChild, equalTo }                from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
-
 
 function initHalamanStatus() {
   onAuthStateChanged(auth, async function(user) {
@@ -34,7 +29,6 @@ function initHalamanStatus() {
     });
   });
 }
-
 
 function renderPesanan(snapshot) {
   var container = document.getElementById('daftarPesanan');
@@ -101,7 +95,6 @@ function kartuPesanan(p) {
   '</div>';
 }
 
-
 function progressBar(statusAktif) {
   var tahapan = [
     { key: 'menunggu_konfirmasi', label: 'Menunggu' },
@@ -132,7 +125,6 @@ function progressBar(statusAktif) {
   return html;
 }
 
-
 function infoStatus(status) {
   var map = {
     'menunggu_konfirmasi': { label: 'Menunggu Konfirmasi', warna: '#f59e0b', icon: '⏳' },
@@ -149,5 +141,4 @@ function formatTanggal(timestamp) {
     day: 'numeric', month: 'long', year: 'numeric'
   });
 }
-
 export { initHalamanStatus };
