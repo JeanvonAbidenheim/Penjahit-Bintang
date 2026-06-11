@@ -1,8 +1,3 @@
-/* ==============================================
-   galeri-publik.js — Tampil galeri di index.html
-   Baca dari Firebase, render ke masonry grid
-   ============================================== */
-
 import { db }                                    from './firebase.js';
 import { ref, onValue }                          from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
 
@@ -15,7 +10,6 @@ var semuaData    = [];
 var dataFiltered = [];
 var filterAktif  = 'semua';
 var itemTampil   = 9;
-
 
 function initGaleriPublik() {
   var galeriGrid = document.getElementById('galeriGrid');
@@ -57,7 +51,6 @@ function initGaleriPublik() {
     });
   }
 }
-
 
 function renderGaleri(filter, loadMore) {
   var galeriGrid = document.getElementById('galeriGrid');
@@ -107,7 +100,6 @@ function renderGaleri(filter, loadMore) {
 
   }, loadMore ? 0 : 400);
 }
-
 
 function buatKartu(item) {
   var el       = document.createElement('div');
@@ -160,7 +152,6 @@ function buatKartu(item) {
   return el;
 }
 
-
 function updateCounter(jumlah) {
   var el = document.getElementById('galeriCount');
   if (el) el.textContent = jumlah;
@@ -180,5 +171,4 @@ function updateLoadMoreBtn(semuaTampil) {
     btn.classList.remove('semua-tampil');
   }
 }
-
 export { initGaleriPublik };
