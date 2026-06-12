@@ -146,6 +146,26 @@ function bukaModal(id, statusSaat, hp, nama, nomor) {
 
   modal.style.display = 'flex';
 
+  // Update label & hint sesuai status yang dipilih
+  function updateLabelCatatan() {
+    var label = document.getElementById('labelCatatan');
+    var hint  = document.getElementById('hintDitolak');
+    var aktif = select ? select.value : statusSaat;
+
+    if (aktif === 'ditolak') {
+      if (label) label.textContent = 'Alasan Penolakan *';
+      if (hint)  hint.style.display = 'block';
+      if (catatan) catatan.placeholder = 'Contoh: Detail ukuran tidak lengkap, mohon hubungi kami kembali.';
+    } else {
+      if (label) label.textContent = 'Catatan untuk Pelanggan (opsional)';
+      if (hint)  hint.style.display = 'none';
+      if (catatan) catatan.placeholder = 'Contoh: Bahan sedang kami potong, estimasi 3 hari lagi.';
+    }
+  }
+
+  updateLabelCatatan();
+  if (select) select.onchange = updateLabelCatatan;
+
   function tutup() { modal.style.display = 'none'; }
   if (btnTutup) btnTutup.onclick = tutup;
   if (backdrop) backdrop.onclick = tutup;
@@ -155,6 +175,23 @@ function bukaModal(id, statusSaat, hp, nama, nomor) {
       var statusBaru  = select   ? select.value        : statusSaat;
       var catatanVal  = catatan  ? catatan.value.trim() : '';
       var estimasiVal = estimasi ? estimasi.value       : '';
+
+      // Wajib isi alasan kalau pesanan ditolak
+      if (statusBaru === 'ditolak' && !catatanVal) {
+        alert('Mohon isi alasan penolakan di kolom "Catatan untuk Pelanggan" sebelum menyimpan.');
+        catatan && catatan.focus();
+        return;
+      }
+
+      // Konfirmasi tambahan untuk penolakan — mencegah klik tidak sengaja
+      if (statusBaru === 'ditolak') {
+        var yakin = confirm(
+          'Yakin ingin MENOLAK pesanan ' + nomor + ' atas nama ' + nama + '?\n\n' +
+          'Alasan: ' + catatanVal + '\n\n' +
+          'Pelanggan akan menerima notifikasi penolakan via WhatsApp.'
+        );
+        if (!yakin) return;
+      }
 
       btnSimpan.textContent = 'Menyimpan...';
       btnSimpan.disabled    = true;
@@ -180,7 +217,7 @@ async function simpanUpdate(id, status, catatan, estimasi, hp, nama, nomor) {
 
   try {
     await update(ref(db, 'pesanan/' + id), payload);
-    kirimNotifWA(hp, nama, nomor, status);
+    kirimNotifWA(hp, nama, nomor, status, catatan);
   } catch (err) {
     alert('Gagal update: ' + err.message);
   }
@@ -188,20 +225,33 @@ async function simpanUpdate(id, status, catatan, estimasi, hp, nama, nomor) {
 
 
 /* ── KIRIM NOTIF WA ── */
-function kirimNotifWA(hp, nama, nomor, status) {
+function kirimNotifWA(hp, nama, nomor, status, catatan) {
   if (!hp) return;
 
   var info  = infoStatus(status);
   var noHp  = hp.replace(/[^0-9]/g, '');
+  var pesan;
 
-  var pesan =
-    'Halo ' + nama + '! 👋\n\n' +
-    'Update pesanan Anda di Penjahit Bintang:\n\n' +
-    '📋 No. Order: *' + nomor + '*\n' +
-    info.icon + ' Status: *' + info.label + '*\n\n' +
-    'Pantau pesanan di:\n' +
-    'https://penjahit-bintang.vercel.app/status.html\n\n' + // ← GANTI URL
-    'Terima kasih! 🙏';
+  if (status === 'ditolak') {
+    // Pesan khusus untuk penolakan — lebih sopan & sertakan alasan
+    pesan =
+      'Halo ' + nama + ', 🙏\n\n' +
+      'Mohon maaf, pesanan Anda di Penjahit Bintang belum dapat kami proses:\n\n' +
+      '📋 No. Order: *' + nomor + '*\n' +
+      '✕ Status: *Ditolak*\n\n' +
+      (catatan ? 'Alasan: ' + catatan + '\n\n' : '') +
+      'Anda dapat menghubungi kami untuk informasi lebih lanjut atau membuat pesanan baru dengan detail yang sesuai.\n\n' +
+      'Terima kasih atas pengertiannya. 🙏';
+  } else {
+    pesan =
+      'Halo ' + nama + '! 👋\n\n' +
+      'Update pesanan Anda di Penjahit Bintang:\n\n' +
+      '📋 No. Order: *' + nomor + '*\n' +
+      info.icon + ' Status: *' + info.label + '*\n\n' +
+      'Pantau pesanan di:\n' +
+      'https://penjahit-bintang.vercel.app/status.html\n\n' + // ← GANTI URL
+      'Terima kasih! 🙏';
+  }
 
   window.open(
     'https://wa.me/' + noHp + '?text=' + encodeURIComponent(pesan),
@@ -214,7 +264,7 @@ function kirimNotifWA(hp, nama, nomor, status) {
 function hitungStatistik(snapshot) {
   if (!snapshot.exists()) return;
 
-  var total = 0, menunggu = 0, diproses = 0, selesai = 0;
+  var total = 0, menunggu = 0, diproses = 0, selesai = 0, ditolak = 0;
 
   snapshot.forEach(function(child) {
     var s = child.val().status;
@@ -222,12 +272,14 @@ function hitungStatistik(snapshot) {
     if (s === 'menunggu_konfirmasi') menunggu++;
     if (s === 'diproses')            diproses++;
     if (s === 'selesai' || s === 'diambil') selesai++;
+    if (s === 'ditolak') ditolak++;
   });
 
   setText('statTotal',    total);
   setText('statMenunggu', menunggu);
   setText('statDiproses', diproses);
   setText('statSelesai',  selesai);
+  setText('statDitolak',  ditolak);
 }
 
 function setText(id, val) {
@@ -243,7 +295,8 @@ function infoStatus(status) {
     'dikonfirmasi':        { label: 'Dikonfirmasi',         warna: '#3b82f6', icon: '✅' },
     'diproses':            { label: 'Sedang Diproses',      warna: '#8b5cf6', icon: '🧵' },
     'selesai':             { label: 'Selesai',               warna: '#10b981', icon: '🎉' },
-    'diambil':             { label: 'Sudah Diambil',         warna: '#6b7280', icon: '📦' }
+    'diambil':             { label: 'Sudah Diambil',         warna: '#6b7280', icon: '📦' },
+    'ditolak':             { label: 'Ditolak',               warna: '#ef4444', icon: '✕' }
   };
   return map[status] || { label: status, warna: '#6b7280', icon: '❓' };
 }
