@@ -1,35 +1,47 @@
+/* ==============================================
+   admin.js — Dashboard admin
+   WAJIB GANTI: EMAIL_ADMIN dengan emailmu
+   ============================================== */
+
 import { auth, db }                             from './firebase.js';
 import { onAuthStateChanged, signOut }          from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, onValue, get, update }            from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
 
-const EMAIL_ADMIN = 'penjahitbintangnia@gmail.com'; // ← SESUAIKAN 
+const EMAIL_ADMIN = 'penjahitbintangnia@gmail.com'; // ← GANTI INI
+
 
 function initAdmin() {
   onAuthStateChanged(auth, async function(user) {
 
-    // Jika Belum login sesuai Users
+    // Belum login
     if (!user) {
       window.location.href = 'auth.html';
       return;
     }
 
-    // Jika Bukan admin yang login
-    if (user.email.toLowerCase() !== EMAIL_ADMIN.toLowerCase()) {
+    // Bukan admin
+    var emailUser  = (user.email || '').toLowerCase().trim();
+    var emailAdmin = EMAIL_ADMIN.toLowerCase().trim();
+
+    if (emailUser !== emailAdmin) {
+      console.warn('Akses ditolak. Email login:', emailUser, '| Email admin terdaftar:', emailAdmin);
       document.body.innerHTML =
         '<div style="display:flex;align-items:center;justify-content:center;' +
         'min-height:100vh;font-family:sans-serif;flex-direction:column;gap:1rem;background:#f4f4f0">' +
         '<p style="font-size:3rem">🚫</p>' +
         '<p style="font-weight:700">Akses ditolak. Halaman ini hanya untuk admin.</p>' +
-        '<a href="index.html" style="color:#c9a84c;font-weight:600">← Kembali ke website</a>' +
+        '<p style="font-size:0.85rem;color:#888">Login sebagai: ' + emailUser + '</p>' +
+        '<a href="auth.html" style="color:#c9a84c;font-weight:600">← Login dengan akun lain</a>' +
+        '<a href="index.html" style="color:#888;font-size:0.85rem">Kembali ke website</a>' +
         '</div>';
       return;
     }
 
-    // Menampilkan email admin
+    // Tampil email admin
     var elEmail = document.getElementById('emailAdmin');
     if (elEmail) elEmail.textContent = user.email;
 
-    // Memantau semua pesanan secara realtime
+    // Pantau semua pesanan secara realtime
     onValue(ref(db, 'pesanan'), async function(snapshot) {
       await renderTabelAdmin(snapshot);
       hitungStatistik(snapshot);
@@ -47,7 +59,8 @@ function initAdmin() {
   });
 }
 
-// RENDER TABEL ADMIN
+
+/* ── RENDER TABEL ADMIN ── */
 async function renderTabelAdmin(snapshot) {
   var container = document.getElementById('tabelPesanan');
   if (!container) return;
@@ -90,7 +103,8 @@ async function renderTabelAdmin(snapshot) {
   });
 }
 
-// BUAT BARIS TABEL 
+
+/* ── BUAT BARIS TABEL ── */
 function buatBarisAdmin(p) {
   var info = infoStatus(p.status);
   var tgl  = new Date(p.createdAt).toLocaleDateString('id-ID', {
@@ -115,7 +129,8 @@ function buatBarisAdmin(p) {
     '</tr>';
 }
 
-// MODAL UPDATE STATUS 
+
+/* ── MODAL UPDATE STATUS ── */
 function bukaModal(id, statusSaat, hp, nama, nomor) {
   var modal    = document.getElementById('modalUpdate');
   var select   = document.getElementById('selectStatus');
@@ -153,7 +168,8 @@ function bukaModal(id, statusSaat, hp, nama, nomor) {
   }
 }
 
-// SIMPAN UPDATE STATUS JOB
+
+/* ── SIMPAN UPDATE STATUS ── */
 async function simpanUpdate(id, status, catatan, estimasi, hp, nama, nomor) {
   var payload = {
     status:    status,
@@ -170,7 +186,8 @@ async function simpanUpdate(id, status, catatan, estimasi, hp, nama, nomor) {
   }
 }
 
-// MENGIRIM NOTIFIKASI WA KE PELANGGAN
+
+/* ── KIRIM NOTIF WA ── */
 function kirimNotifWA(hp, nama, nomor, status) {
   if (!hp) return;
 
@@ -178,7 +195,7 @@ function kirimNotifWA(hp, nama, nomor, status) {
   var noHp  = hp.replace(/[^0-9]/g, '');
 
   var pesan =
-    'Halo ' + nama + '! 👋🏻 \n\n' +
+    'Halo ' + nama + '! 👋\n\n' +
     'Update pesanan Anda di Penjahit Bintang:\n\n' +
     '📋 No. Order: *' + nomor + '*\n' +
     info.icon + ' Status: *' + info.label + '*\n\n' +
@@ -192,7 +209,8 @@ function kirimNotifWA(hp, nama, nomor, status) {
   );
 }
 
-// STATISTIK DATA PESANAN
+
+/* ── STATISTIK ── */
 function hitungStatistik(snapshot) {
   if (!snapshot.exists()) return;
 
@@ -217,7 +235,8 @@ function setText(id, val) {
   if (el) el.textContent = val;
 }
 
-// INFO STATUS PESANAN
+
+/* ── INFO STATUS ── */
 function infoStatus(status) {
   var map = {
     'menunggu_konfirmasi': { label: 'Menunggu Konfirmasi', warna: '#f59e0b', icon: '⏳' },
@@ -229,9 +248,11 @@ function infoStatus(status) {
   return map[status] || { label: status, warna: '#6b7280', icon: '❓' };
 }
 
-// LOGOUT
+
+/* ── LOGOUT ── */
 async function logout() {
   await signOut(auth);
   window.location.href = 'index.html';
 }
+
 export { initAdmin, logout };
