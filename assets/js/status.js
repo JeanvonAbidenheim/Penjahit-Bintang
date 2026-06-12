@@ -1,7 +1,12 @@
+/* ==============================================
+   status.js — Cek status pesanan realtime
+   ============================================== */
+
 import { auth, db }                             from './firebase.js';
 import { onAuthStateChanged }                   from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, get, onValue, query,
          orderByChild, equalTo }                from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
+
 
 function initHalamanStatus() {
   onAuthStateChanged(auth, async function(user) {
@@ -29,6 +34,7 @@ function initHalamanStatus() {
     });
   });
 }
+
 
 function renderPesanan(snapshot) {
   var container = document.getElementById('daftarPesanan');
@@ -86,8 +92,8 @@ function kartuPesanan(p) {
         '<span class="kartu-label">Estimasi Ambil</span>' +
         '<span class="kartu-val">' + tglEstimasi + '</span>' +
       '</div>' +
-      (p.catatanAdmin ? '<div class="kartu-info-row catatan">' +
-        '<span class="kartu-label">Catatan Admin</span>' +
+      (p.catatanAdmin ? '<div class="kartu-info-row catatan ' + (p.status === 'ditolak' ? 'catatan-tolak' : '') + '">' +
+        '<span class="kartu-label">' + (p.status === 'ditolak' ? 'Alasan Penolakan' : 'Catatan Admin') + '</span>' +
         '<span class="kartu-val">' + p.catatanAdmin + '</span>' +
       '</div>' : '') +
     '</div>' +
@@ -95,7 +101,19 @@ function kartuPesanan(p) {
   '</div>';
 }
 
+
 function progressBar(statusAktif) {
+  // Kalau pesanan ditolak, tampilkan progress bar khusus
+  // (bukan progress bar normal 5 tahap)
+  if (statusAktif === 'ditolak') {
+    return '<div class="progress-wrap progress-ditolak">' +
+      '<div class="progress-step aktif sekarang ditolak">' +
+        '<div class="progress-dot">✕</div>' +
+        '<p class="progress-label">Pesanan Ditolak</p>' +
+      '</div>' +
+    '</div>';
+  }
+
   var tahapan = [
     { key: 'menunggu_konfirmasi', label: 'Menunggu' },
     { key: 'dikonfirmasi',        label: 'Dikonfirmasi' },
@@ -125,13 +143,15 @@ function progressBar(statusAktif) {
   return html;
 }
 
+
 function infoStatus(status) {
   var map = {
     'menunggu_konfirmasi': { label: 'Menunggu Konfirmasi', warna: '#f59e0b', icon: '⏳' },
     'dikonfirmasi':        { label: 'Dikonfirmasi',         warna: '#3b82f6', icon: '✅' },
     'diproses':            { label: 'Sedang Diproses',      warna: '#8b5cf6', icon: '🧵' },
     'selesai':             { label: 'Selesai',               warna: '#10b981', icon: '🎉' },
-    'diambil':             { label: 'Sudah Diambil',         warna: '#6b7280', icon: '📦' }
+    'diambil':             { label: 'Sudah Diambil',         warna: '#6b7280', icon: '📦' },
+    'ditolak':             { label: 'Ditolak',               warna: '#ef4444', icon: '✕' }
   };
   return map[status] || { label: status, warna: '#6b7280', icon: '❓' };
 }
@@ -141,4 +161,5 @@ function formatTanggal(timestamp) {
     day: 'numeric', month: 'long', year: 'numeric'
   });
 }
+
 export { initHalamanStatus };
