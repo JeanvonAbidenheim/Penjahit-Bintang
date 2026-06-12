@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin | Penjahit Bintang</title>
+  <title>Dashboard Admin — Penjahit Bintang</title>
   <link rel="stylesheet" href="assets/css/sistem.css" />
 </head>
 <body>
@@ -14,8 +14,7 @@
     </a>
     <div class="sistem-nav-right">
       <span class="sistem-user">Admin: <strong id="emailAdmin">...</strong></span>
-      <button class="btn-logout" id="btnLogout"><img width="20" height="20" src="https://img.icons8.com/ios-filled/20/logout-rounded-left.png" alt="logout-rounded-left"/></button>
-      <a href="galeri-admin.html" class="btn-pesan-baru"><img width="20" height="20" src="https://img.icons8.com/glyph-neue/20/gallery.png" alt="gallery"/></a>
+      <button class="btn-logout" id="btnLogout">Keluar</button>
     </div>
   </nav>
 
@@ -41,17 +40,21 @@
         <span class="angka" id="statSelesai" style="color:#10b981">0</span>
         <span class="keterangan">Selesai / Diambil</span>
       </div>
+      <div class="stat-card">
+        <span class="angka" id="statDitolak" style="color:#ef4444">0</span>
+        <span class="keterangan">Ditolak</span>
+      </div>
     </div>
 
     <!-- Filter -->
     <div class="admin-filter">
       <button class="filter-status aktif" data-status="">Semua</button>
-      <button class="filter-status" data-status="menunggu_konfirmasi"><img width="15" height="15" src="https://img.icons8.com/glyph-neue/15/hourglass.png" alt="hourglass"/> Menunggu</button>
-      <button class="filter-status" data-status="dikonfirmasi"><img width="15" height="15" src="https://img.icons8.com/ios-filled/15/reviewer-female.png" alt="reviewer-female"/> Dikonfirmasi</button>
-      <button class="filter-status" data-status="diproses"><img width="15" height="15" src="https://img.icons8.com/ios-filled/15/process.png" alt="process"/> Diproses</button>
-      <button class="filter-status" data-status="selesai"><img width="15" height="15" src="https://img.icons8.com/glyph-neue/15/finish-flag.png" alt="finish-flag"/> Selesai</button>
-      <button class="filter-status" data-status="diambil"><img width="15" height="15" src="https://img.icons8.com/ios-filled/15/pick-up.png" alt="pick-up"/> Diambil</button>
-      <button class="filter-status" data-status="ditolak"><img width="15" height="15" src="https://img.icons8.com/ios/15/cancel-2.png" alt="cancel-2"/></button>
+      <button class="filter-status" data-status="menunggu_konfirmasi">⏳ Menunggu</button>
+      <button class="filter-status" data-status="dikonfirmasi">✅ Dikonfirmasi</button>
+      <button class="filter-status" data-status="diproses">🧵 Diproses</button>
+      <button class="filter-status" data-status="selesai">🎉 Selesai</button>
+      <button class="filter-status" data-status="diambil">📦 Diambil</button>
+      <button class="filter-status" data-status="ditolak">✕ Ditolak</button>
     </div>
 
     <!-- Tabel -->
@@ -69,7 +72,7 @@
           </tr>
         </thead>
         <tbody id="tabelPesanan">
-          <tr><td colspan="7" class="loading-td"><img width="30" height="30" src="https://img.icons8.com/glyph-neue/30/hourglass.png" alt="hourglass"/> Memuat data...</td></tr>
+          <tr><td colspan="7" class="loading-td">⏳ Memuat data...</td></tr>
         </tbody>
       </table>
     </div>
@@ -85,12 +88,12 @@
         <div class="form-group">
           <label for="selectStatus">Status Baru</label>
           <select id="selectStatus">
-            <option value="menunggu_konfirmasi"><img width="15" height="15" src="https://img.icons8.com/glyph-neue/15/hourglass.png" alt="hourglass"/> Menunggu Konfirmasi</option>
-            <option value="dikonfirmasi"><img width="15" height="15" src="https://img.icons8.com/ios-filled/15/reviewer-female.png" alt="reviewer-female"/> Dikonfirmasi</option>
-            <option value="diproses"><img width="15" height="15" src="https://img.icons8.com/ios-filled/15/process.png" alt="process"/> Sedang Diproses</option>
-            <option value="selesai"><img width="15" height="15" src="https://img.icons8.com/glyph-neue/15/finish-flag.png" alt="finish-flag"/> Selesai</option>
-            <option value="diambil"><img width="15" height="15" src="https://img.icons8.com/ios-filled/15/pick-up.png" alt="pick-up"/> Sudah Diambil</option>
-            <option value="ditolak"><img width="15" height="15" src="https://img.icons8.com/ios/15/cancel-2.png" alt="cancel-2"/> Ditolak</option>
+            <option value="menunggu_konfirmasi">⏳ Menunggu Konfirmasi</option>
+            <option value="dikonfirmasi">✅ Dikonfirmasi</option>
+            <option value="diproses">🧵 Sedang Diproses</option>
+            <option value="selesai">🎉 Selesai</option>
+            <option value="diambil">📦 Sudah Diambil</option>
+            <option value="ditolak">✕ Ditolak</option>
           </select>
         </div>
         <div class="form-group">
@@ -98,11 +101,16 @@
           <input type="date" id="estimasiAdmin" />
         </div>
         <div class="form-group">
-          <label for="catatanAdmin">Catatan untuk Pelanggan (opsional)</label>
+          <label for="catatanAdmin" id="labelCatatan">Catatan untuk Pelanggan (opsional)</label>
           <textarea id="catatanAdmin" rows="3"
             placeholder="Contoh: Bahan sedang kami potong, estimasi 3 hari lagi."></textarea>
+          <p id="hintDitolak" style="display:none;font-size:0.78rem;color:#ef4444;margin-top:0.25rem">
+            ⚠️ Wajib diisi — alasan ini akan dikirim ke pelanggan via WhatsApp.
+          </p>
         </div>
-        <button class="btn-simpan" id="btnSimpanStatus">Simpan & Kirim Notifikasi</button>
+        <button class="btn-simpan" id="btnSimpanStatus">
+          Simpan & Kirim Notif WA
+        </button>
       </div>
     </div>
   </div>
@@ -118,5 +126,6 @@
       window.location.href = 'index.html';
     });
   </script>
+
 </body>
 </html>
