@@ -1,17 +1,24 @@
+/* ==============================================
+   auth.js — Login & daftar pakai Firebase Auth
+   ============================================== */
+
 import { auth, db }                             from './firebase.js';
 import { createUserWithEmailAndPassword,
          signInWithEmailAndPassword,
-         onAuthStateChanged }                   from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+         signOut }                              from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, set }                             from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
 
-// INISIALISASI 
+
+/* ── INISIALISASI ── */
 function initAuth() {
-  // Kalau sudah login → langsung ke status
-  onAuthStateChanged(auth, function(user) {
-    if (user) {
-      window.location.href = 'status.html';
-    }
-  });
+  // PENTING: jangan auto-redirect berdasarkan onAuthStateChanged di sini.
+  // Halaman auth.html adalah tempat orang GANTI akun / login ulang —
+  // kalau ada sesi lama tersimpan, JANGAN langsung lempar ke status.html,
+  // karena itu akan membypass form login yang baru diisi user.
+  //
+  // Redirect HANYA terjadi:
+  //  1. Setelah signInWithEmailAndPassword() di form login BERHASIL, atau
+  //  2. Setelah createUserWithEmailAndPassword() di form daftar BERHASIL
 
   var tabLogin  = document.getElementById('tabLogin');
   var tabDaftar = document.getElementById('tabDaftar');
@@ -23,7 +30,8 @@ function initAuth() {
   initFormDaftar();
 }
 
-// FORM LOGIN 
+
+/* ── FORM LOGIN ── */
 function initFormLogin() {
   var form = document.getElementById('formLogin');
   if (!form) return;
@@ -34,23 +42,41 @@ function initFormLogin() {
     var email    = document.getElementById('loginEmail').value.trim();
     var password = document.getElementById('loginPassword').value;
 
+    if (!email || !password) {
+      tampilPesan('login', 'error', 'Email dan password wajib diisi.');
+      return;
+    }
+
     setLoading('formLogin', true);
 
     try {
+      // PENTING: logout dulu dari sesi sebelumnya (kalau ada)
+      // supaya tidak ada sesi "nyangkut" dari akun lain
+      if (auth.currentUser) {
+        await signOut(auth);
+      }
+
+      // Login dengan kredensial yang baru diisi
       await signInWithEmailAndPassword(auth, email, password);
+
+      // Hanya redirect kalau login BENAR-BENAR berhasil sampai sini
       window.location.href = 'status.html';
+
     } catch (err) {
       setLoading('formLogin', false);
       var pesan = 'Email atau password salah.';
-      if (err.code === 'auth/user-not-found')  pesan = 'Akun tidak ditemukan.';
-      if (err.code === 'auth/wrong-password')  pesan = 'Password salah.';
+      if (err.code === 'auth/user-not-found')    pesan = 'Akun tidak ditemukan. Silakan daftar dulu.';
+      if (err.code === 'auth/wrong-password')    pesan = 'Password salah.';
+      if (err.code === 'auth/invalid-credential') pesan = 'Email atau password salah.';
+      if (err.code === 'auth/invalid-email')     pesan = 'Format email tidak valid.';
       if (err.code === 'auth/too-many-requests') pesan = 'Terlalu banyak percobaan. Coba lagi nanti.';
       tampilPesan('login', 'error', pesan);
     }
   });
 }
 
-// FORM DAFTAR 
+
+/* ── FORM DAFTAR ── */
 function initFormDaftar() {
   var form = document.getElementById('formDaftar');
   if (!form) return;
@@ -80,6 +106,12 @@ function initFormDaftar() {
     setLoading('formDaftar', true);
 
     try {
+      // PENTING: logout dulu kalau ada sesi lama, supaya akun baru
+      // tidak "menumpuk" di atas sesi sebelumnya
+      if (auth.currentUser) {
+        await signOut(auth);
+      }
+
       // Buat akun di Firebase Auth
       var result = await createUserWithEmailAndPassword(auth, email, password);
       var uid    = result.user.uid;
@@ -106,14 +138,15 @@ function initFormDaftar() {
   });
 }
 
-// LOGOUT
+
+/* ── LOGOUT ── */
 async function logout() {
-  await auth.signOut();
+  await signOut(auth);
   window.location.href = 'index.html';
 }
 
 
-// HELPER 
+/* ── HELPER ── */
 function toggleTab(tab) {
   var formLogin  = document.getElementById('formLogin');
   var formDaftar = document.getElementById('formDaftar');
@@ -149,4 +182,5 @@ function tampilPesan(form, tipe, pesan) {
   el.style.display = 'block';
   setTimeout(function() { el.style.display = 'none'; }, 4000);
 }
+
 export { initAuth, logout };
