@@ -224,7 +224,7 @@
       var snap = await get(ref(db, 'users/' + user.uid));
       var profil = snap.exists() ? snap.val() : {};
       var elRole = document.getElementById('roleBadge');
-      var EMAIL_ADMIN = 'emailadmin@gmail.com'; // ← GANTI INI
+      var EMAIL_ADMIN = 'penjahitbintangnia@gmail.com'; // ← GANTI INI
 
       if (user.email.toLowerCase().trim() === EMAIL_ADMIN.toLowerCase().trim()) {
         if (elRole) {
