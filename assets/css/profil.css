@@ -1,0 +1,418 @@
+/* ==============================================
+   profil.css — Style halaman profil pelanggan/admin
+   ============================================== */
+
+.profil-container {
+  max-width: 900px !important;
+}
+
+/* ── Layout 2 kolom ── */
+.profil-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+/* ══════════════════════════════════════
+   SIDEBAR KIRI
+══════════════════════════════════════ */
+.profil-sidebar {
+  background: var(--putih);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-besar);
+  padding: 2rem 1.5rem;
+  box-shadow: var(--shadow-sedang);
+  position: sticky;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Avatar ── */
+.avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.avatar-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--emas), var(--emas-gelap));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-sedang);
+  position: relative;
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-inisial {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--hitam);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Tombol ganti foto */
+.btn-ganti-foto {
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  background: var(--abu-super-terang);
+  border: 1.5px solid var(--border);
+  color: var(--hitam);
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-bulat);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-ganti-foto:hover {
+  background: var(--hitam);
+  color: var(--putih);
+  border-color: var(--hitam);
+}
+
+/* Tombol hapus foto */
+.btn-hapus-foto-profil {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  background: none;
+  border: none;
+  color: var(--abu-terang);
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.btn-hapus-foto-profil:hover { color: #ef4444; }
+
+/* Progress upload */
+.progress-upload-wrap {
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+
+.progress-upload-bar {
+  height: 100%;
+  background: var(--emas);
+  border-radius: 3px;
+  transition: width 0.2s ease;
+}
+
+.progress-upload-teks {
+  font-size: 0.72rem;
+  color: var(--abu-terang);
+  text-align: center;
+}
+
+/* ── Info ringkas ── */
+.profil-info-ringkas {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.profil-email-tampil {
+  font-size: 0.8rem;
+  color: var(--abu-terang);
+  word-break: break-all;
+}
+
+.profil-role-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-bulat);
+  background: var(--emas-muda);
+  color: var(--emas-gelap);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  align-self: center;
+}
+
+/* ── Navigasi menu sidebar ── */
+.profil-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.profil-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  color: var(--abu-terang);
+  background: none;
+  border: none;
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--radius-kecil);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.profil-nav-btn:hover { background: var(--abu-super-terang); color: var(--hitam); }
+.profil-nav-btn.aktif { background: var(--hitam); color: var(--putih); }
+
+
+/* ══════════════════════════════════════
+   KONTEN KANAN — Section
+══════════════════════════════════════ */
+.profil-section {
+  display: none;
+  background: var(--putih);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-besar);
+  padding: 2rem;
+  box-shadow: var(--shadow-sedang);
+}
+
+.profil-section.aktif { display: block; }
+
+.profil-section-header { margin-bottom: 1.75rem; }
+
+.profil-section-judul {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--hitam);
+  margin-bottom: 0.3rem;
+}
+
+.profil-section-sub {
+  font-size: 0.85rem;
+  color: var(--abu-terang);
+}
+
+/* ── Form ── */
+.profil-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.profil-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.profil-form-group label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--hitam);
+}
+
+.wajib { color: #ef4444; }
+
+.profil-form-group input {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--hitam);
+  background: var(--abu-super-terang);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-kecil);
+  padding: 0.7rem 1rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.profil-form-group input:focus {
+  border-color: var(--emas);
+  box-shadow: 0 0 0 3px var(--emas-muda);
+  background: var(--putih);
+}
+
+.profil-form-group input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--border);
+}
+
+/* Input dengan prefix @ */
+.input-prefix-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-prefix {
+  position: absolute;
+  left: 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--abu-terang);
+  pointer-events: none;
+}
+
+.input-prefix-wrap input {
+  padding-left: 2rem !important;
+}
+
+/* Input password dengan toggle show/hide */
+.input-pw-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-pw-wrap input { padding-right: 3rem !important; }
+
+.btn-toggle-pw {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.25rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.btn-toggle-pw:hover { opacity: 1; }
+
+/* Hint teks kecil di bawah input */
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--abu-terang);
+  line-height: 1.4;
+}
+
+/* Footer form — tombol simpan */
+.profil-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.btn-profil-simpan {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--hitam);
+  color: var(--putih);
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: var(--radius-kecil);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-profil-simpan:hover    { background: var(--emas); color: var(--hitam); }
+.btn-profil-simpan:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── Notifikasi per-section ── */
+.profil-notif {
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-kecil);
+  margin-bottom: 1rem;
+  display: none;
+}
+
+.profil-notif.sukses {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.profil-notif.error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .profil-layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .profil-sidebar {
+    position: static;
+  }
+
+  /* Sidebar jadi horizontal di HP */
+  .avatar-wrap {
+    flex-direction: row;
+    text-align: left;
+    gap: 1rem;
+  }
+
+  .avatar-circle {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+  }
+
+  .avatar-inisial { font-size: 1.75rem; }
+
+  .profil-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-top: 0.75rem;
+  }
+
+  .profil-nav-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .profil-section { padding: 1.5rem; }
+
+  .profil-form-footer { justify-content: stretch; }
+  .btn-profil-simpan  { width: 100%; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .avatar-wrap {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
