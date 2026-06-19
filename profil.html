@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil Saya — Penjahit Bintang</title>
+  <link rel="stylesheet" href="assets/css/sistem.css" />
+  <link rel="stylesheet" href="assets/css/profil.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="sistem-navbar">
+    <a href="index.html" class="sistem-logo">
+      <span>✦</span> Penjahit <em>Bintang</em>
+    </a>
+    <div class="sistem-nav-right">
+      <span class="sistem-user">Halo, <strong id="namaUser">...</strong></span>
+      <a href="status.html">Pesanan Saya</a>
+      <button class="btn-logout" id="btnLogout">Keluar</button>
+    </div>
+  </nav>
+
+  <div class="sistem-container profil-container">
+
+    <div class="profil-layout">
+
+      <!-- ── SIDEBAR KIRI: Avatar & info ringkas ── -->
+      <div class="profil-sidebar">
+
+        <!-- Avatar -->
+        <div class="avatar-wrap">
+          <div class="avatar-circle">
+            <!-- Foto profil (muncul kalau ada) -->
+            <img id="avatarImg" src="" alt="Foto Profil" style="display:none" />
+            <!-- Inisial nama (muncul kalau tidak ada foto) -->
+            <div id="avatarInisial" class="avatar-inisial">?</div>
+          </div>
+
+          <!-- Tombol ganti foto -->
+          <button class="btn-ganti-foto" id="btnGantiFoto"
+            onclick="document.getElementById('inputFotoProfil').click()">
+            📷 Ganti Foto
+          </button>
+          <input type="file" id="inputFotoProfil" accept="image/*" style="display:none" />
+
+          <!-- Progress upload foto -->
+          <div id="progressFotoWrap" style="display:none;width:100%;margin-top:0.75rem">
+            <div class="progress-upload-wrap">
+              <div class="progress-upload-bar" id="progressFotoBar" style="width:0%"></div>
+            </div>
+            <p class="progress-upload-teks" id="progressFotoTeks">0%</p>
+          </div>
+
+          <!-- Notif area foto -->
+          <div id="notif-foto" class="profil-notif" style="display:none"></div>
+
+          <!-- Preview foto baru -->
+          <img id="fotoPreview" src="" alt="Preview"
+            style="display:none;width:80px;height:80px;object-fit:cover;border-radius:50%;margin:0.5rem auto" />
+
+          <!-- Tombol hapus foto -->
+          <button class="btn-hapus-foto-profil" id="btnHapusFoto">
+            🗑️ Hapus Foto
+          </button>
+        </div>
+
+        <!-- Info ringkas -->
+        <div class="profil-info-ringkas">
+          <p class="profil-email-tampil" id="emailTampil"></p>
+          <span class="profil-role-badge" id="roleBadge">Pelanggan</span>
+        </div>
+
+        <!-- Navigasi menu profil -->
+        <nav class="profil-nav">
+          <button class="profil-nav-btn aktif" data-section="infoDasar">
+            👤 Info Dasar
+          </button>
+          <button class="profil-nav-btn" data-section="keamanan">
+            🔒 Keamanan
+          </button>
+        </nav>
+
+      </div>
+
+      <!-- ── KONTEN KANAN ── -->
+      <div class="profil-konten">
+
+        <!-- ── Section: Info Dasar ── -->
+        <div class="profil-section aktif" id="section-infoDasar">
+          <div class="profil-section-header">
+            <h2 class="profil-section-judul">Info Dasar</h2>
+            <p class="profil-section-sub">Informasi profil yang dilihat di akun kamu</p>
+          </div>
+
+          <div id="notif-infoDasar" class="profil-notif" style="display:none"></div>
+
+          <form id="formInfoDasar" class="profil-form">
+
+            <div class="profil-form-group">
+              <label for="profilNama">Nama Lengkap <span class="wajib">*</span></label>
+              <input type="text" id="profilNama" placeholder="Nama lengkap kamu" required />
+            </div>
+
+            <div class="profil-form-group">
+              <label for="profilUsername">Username</label>
+              <div class="input-prefix-wrap">
+                <span class="input-prefix">@</span>
+                <input type="text" id="profilUsername"
+                  placeholder="username_kamu"
+                  pattern="[a-zA-Z0-9_]+"
+                  title="Hanya huruf, angka, dan underscore" />
+              </div>
+              <p class="form-hint">Opsional. Hanya huruf, angka, dan underscore (_).</p>
+            </div>
+
+            <div class="profil-form-group">
+              <label for="profilHp">Nomor WhatsApp</label>
+              <input type="tel" id="profilHp" placeholder="08xxxxxxxxxx" />
+            </div>
+
+            <div class="profil-form-group">
+              <label for="profilEmail">Email</label>
+              <input type="email" id="profilEmail" disabled />
+              <p class="form-hint">Email tidak bisa diubah melalui halaman ini.</p>
+            </div>
+
+            <div class="profil-form-footer">
+              <button type="submit" class="btn-profil-simpan" id="btnSimpanInfo">
+                Simpan Perubahan
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+
+        <!-- ── Section: Keamanan ── -->
+        <div class="profil-section" id="section-keamanan">
+          <div class="profil-section-header">
+            <h2 class="profil-section-judul">Keamanan</h2>
+            <p class="profil-section-sub">Kelola password akun kamu</p>
+          </div>
+
+          <div id="notif-password" class="profil-notif" style="display:none"></div>
+
+          <form id="formPassword" class="profil-form">
+
+            <div class="profil-form-group">
+              <label for="passwordLama">Password Lama <span class="wajib">*</span></label>
+              <div class="input-pw-wrap">
+                <input type="password" id="passwordLama" placeholder="Password saat ini" />
+                <button type="button" class="btn-toggle-pw" data-target="passwordLama">👁️</button>
+              </div>
+            </div>
+
+            <div class="profil-form-group">
+              <label for="passwordBaru">Password Baru <span class="wajib">*</span></label>
+              <div class="input-pw-wrap">
+                <input type="password" id="passwordBaru" placeholder="Minimal 6 karakter" />
+                <button type="button" class="btn-toggle-pw" data-target="passwordBaru">👁️</button>
+              </div>
+            </div>
+
+            <div class="profil-form-group">
+              <label for="passwordUlang">Konfirmasi Password Baru <span class="wajib">*</span></label>
+              <div class="input-pw-wrap">
+                <input type="password" id="passwordUlang" placeholder="Ulangi password baru" />
+                <button type="button" class="btn-toggle-pw" data-target="passwordUlang">👁️</button>
+              </div>
+            </div>
+
+            <div class="profil-form-footer">
+              <button type="submit" class="btn-profil-simpan" id="btnSimpanPw">
+                Ganti Password
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initProfil }  from './assets/js/profil.js';
+    import { signOut }     from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+    import { auth }        from './assets/js/firebase.js';
+    import { get, ref }    from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
+    import { db }          from './assets/js/firebase.js';
+
+    document.addEventListener('DOMContentLoaded', initProfil);
+
+    // Logout
+    document.getElementById('btnLogout').addEventListener('click', async function() {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    });
+
+    // Navigasi section
+    document.querySelectorAll('.profil-nav-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.profil-nav-btn').forEach(function(b) {
+          b.classList.remove('aktif');
+        });
+        document.querySelectorAll('.profil-section').forEach(function(s) {
+          s.classList.remove('aktif');
+        });
+        btn.classList.add('aktif');
+        document.getElementById('section-' + btn.dataset.section).classList.add('aktif');
+      });
+    });
+
+    // Tampilkan email di sidebar
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
+    onAuthStateChanged(auth, async function(user) {
+      if (!user) return;
+
+      var elEmail = document.getElementById('emailTampil');
+      if (elEmail) elEmail.textContent = user.email;
+
+      // Cek apakah admin
+      var snap = await get(ref(db, 'users/' + user.uid));
+      var profil = snap.exists() ? snap.val() : {};
+      var elRole = document.getElementById('roleBadge');
+      var EMAIL_ADMIN = 'emailadmin@gmail.com'; // ← GANTI INI
+
+      if (user.email.toLowerCase().trim() === EMAIL_ADMIN.toLowerCase().trim()) {
+        if (elRole) {
+          elRole.textContent = 'Admin';
+          elRole.style.background = '#1a1a1a';
+          elRole.style.color = '#c9a84c';
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
