@@ -4,7 +4,7 @@
    ============================================== */
 
 /* ── Import variabel dari base.css ── */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700&family=Karla:wght@300;400;500;600;700&display=swap');
+@import url('icons.css');
 
 :root {
   --putih:            #ffffff;
