@@ -1,0 +1,94 @@
+/* ==============================================
+   icons.css — Style global untuk SVG icons
+   Import di main.css dan sistem.css
+   ============================================== */
+
+/* ── Base SVG icon ── */
+svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ── Size variants ── */
+.icon-xs  { width: 12px; height: 12px; }
+.icon-sm  { width: 14px; height: 14px; }
+.icon     { width: 16px; height: 16px; }
+.icon-md  { width: 18px; height: 18px; }
+.icon-lg  { width: 20px; height: 20px; }
+.icon-xl  { width: 24px; height: 24px; }
+.icon-2xl { width: 32px; height: 32px; }
+.icon-3xl { width: 48px; height: 48px; }
+
+/* ── Color variants ── */
+.icon-emas    { color: var(--emas); }
+.icon-abu     { color: var(--abu-terang); }
+.icon-hitam   { color: var(--hitam); }
+.icon-putih   { color: var(--putih); }
+.icon-sukses  { color: #22c55e; }
+.icon-bahaya  { color: #ef4444; }
+.icon-info    { color: #3b82f6; }
+.icon-warning { color: #f59e0b; }
+
+/* ── Spin animation untuk loading ── */
+.icon-spin {
+  animation: iconSpin 1s linear infinite;
+}
+
+@keyframes iconSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Pulse animation ── */
+.icon-pulse {
+  animation: iconPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ── Icon dalam tombol ── */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ── Icon standalone (tanpa teks) ── */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-kecil);
+  border: 1.5px solid var(--border);
+  background: var(--abu-super-terang);
+  color: var(--abu-terang);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: var(--hitam);
+  color: var(--putih);
+  border-color: var(--hitam);
+}
+
+.icon-btn.danger:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: var(--putih);
+}
+
+/* ── Status badge dengan icon ── */
+.status-badge svg,
+.status-badge-sm svg {
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
+  margin-right: 3px;
+}
