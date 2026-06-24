@@ -7,8 +7,9 @@
 import { auth, db }                              from './firebase.js';
 import { onAuthStateChanged, signOut }           from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, push, onValue, remove, update }    from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
+import { Icons }                                 from './icons.js';
 
-const EMAIL_ADMIN      = 'penjahitbintangnia@gmail.com';  // ← GANTI INI
+const EMAIL_ADMIN      = 'emailadmin@gmail.com';  // ← GANTI INI
 const CLOUDINARY_URL   = 'https://api.cloudinary.com/v1_1/dhi4xmvsr/image/upload';
 const CLOUDINARY_PRESET = 'penjahit-bintang';
 
@@ -18,11 +19,7 @@ function initGaleriAdmin() {
   onAuthStateChanged(auth, function(user) {
     if (!user) { window.location.href = 'auth.html'; return; }
 
-    var emailUser  = (user.email || '').toLowerCase().trim();
-    var emailAdmin = EMAIL_ADMIN.toLowerCase().trim();
-
-    if (emailUser !== emailAdmin) {
-      console.warn('Akses ditolak. Login sebagai:', emailUser);
+    if (user.email.toLowerCase() !== EMAIL_ADMIN.toLowerCase()) {
       window.location.href = 'index.html';
       return;
     }
@@ -208,7 +205,7 @@ function muatGaleriAdmin() {
 function kartuGaleriAdmin(item) {
   var badgeHtml = item.badge && item.badge !== 'null'
     ? '<span class="badge-foto badge-' + item.badge + '">' +
-      (item.badge === 'baru' ? '✦ Baru' : item.badge === 'terlaris' ? '🔥 Terlaris' : '🏷 Promo') +
+      (item.badge === 'baru' ? Icons.bintangMerk + ' Baru' : item.badge === 'terlaris' ? Icons.bintang + ' Terlaris' : Icons.label + ' Promo') +
       '</span>'
     : '';
 
