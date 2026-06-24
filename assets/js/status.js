@@ -6,6 +6,7 @@ import { auth, db }                             from './firebase.js';
 import { onAuthStateChanged }                   from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, get, onValue, query,
          orderByChild, equalTo }                from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
+import { Icons }                                from './icons.js';
 
 
 function initHalamanStatus() {
@@ -108,7 +109,7 @@ function progressBar(statusAktif) {
   if (statusAktif === 'ditolak') {
     return '<div class="progress-wrap progress-ditolak">' +
       '<div class="progress-step aktif sekarang ditolak">' +
-        '<div class="progress-dot">✕</div>' +
+        '<div class="progress-dot">' + Icons.tolak + '</div>' +
         '<p class="progress-label">Pesanan Ditolak</p>' +
       '</div>' +
     '</div>';
@@ -128,7 +129,7 @@ function progressBar(statusAktif) {
   tahapan.forEach(function(t, i) {
     var aktif    = i <= idxAktif ? 'aktif' : '';
     var sekarang = i === idxAktif ? 'sekarang' : '';
-    var dotIsi   = i < idxAktif ? '✓' : (i + 1);
+    var dotIsi   = i < idxAktif ? Icons.cek : (i + 1);
 
     html += '<div class="progress-step ' + aktif + ' ' + sekarang + '">';
     html += '<div class="progress-dot">' + dotIsi + '</div>';
@@ -146,14 +147,14 @@ function progressBar(statusAktif) {
 
 function infoStatus(status) {
   var map = {
-    'menunggu_konfirmasi': { label: 'Menunggu Konfirmasi', warna: '#f59e0b', icon: '⏳' },
-    'dikonfirmasi':        { label: 'Dikonfirmasi',         warna: '#3b82f6', icon: '✅' },
-    'diproses':            { label: 'Sedang Diproses',      warna: '#8b5cf6', icon: '🧵' },
-    'selesai':             { label: 'Selesai',               warna: '#10b981', icon: '🎉' },
-    'diambil':             { label: 'Sudah Diambil',         warna: '#6b7280', icon: '📦' },
-    'ditolak':             { label: 'Ditolak',               warna: '#ef4444', icon: '✕' }
+    'menunggu_konfirmasi': { label: 'Menunggu Konfirmasi', warna: '#f59e0b', icon: Icons.loading, ikonWA: '⏳' },
+    'dikonfirmasi':        { label: 'Dikonfirmasi',         warna: '#3b82f6', icon: Icons.cek,    ikonWA: '✅' },
+    'diproses':            { label: 'Sedang Diproses',      warna: '#8b5cf6', icon: Icons.jahit,  ikonWA: '🧵' },
+    'selesai':             { label: 'Selesai',               warna: '#10b981', icon: Icons.sukses, ikonWA: '🎉' },
+    'diambil':             { label: 'Sudah Diambil',         warna: '#6b7280', icon: Icons.paket,  ikonWA: '📦' },
+    'ditolak':             { label: 'Ditolak',               warna: '#ef4444', icon: Icons.tolak,  ikonWA: '✕'  }
   };
-  return map[status] || { label: status, warna: '#6b7280', icon: '❓' };
+  return map[status] || { label: status, warna: '#6b7280', icon: Icons.tanya, ikonWA: '❓' };
 }
 
 function formatTanggal(timestamp) {
