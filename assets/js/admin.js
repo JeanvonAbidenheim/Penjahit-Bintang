@@ -6,6 +6,7 @@
 import { auth, db }                             from './firebase.js';
 import { onAuthStateChanged, signOut }          from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, onValue, get, update }            from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
+import { Icons }                                from './icons.js';
 
 const EMAIL_ADMIN = 'penjahitbintangnia@gmail.com'; // ← GANTI INI
 
@@ -66,7 +67,7 @@ async function renderTabelAdmin(snapshot) {
   if (!container) return;
 
   if (!snapshot.exists()) {
-    container.innerHTML = '<tr><td colspan="7" class="loading-td">📭 Belum ada pesanan masuk.</td></tr>';
+    container.innerHTML = '<tr><td colspan="7" class="loading-td">' + Icons.email + ' Belum ada pesanan masuk.</td></tr>';
     return;
   }
 
@@ -247,7 +248,7 @@ function kirimNotifWA(hp, nama, nomor, status, catatan) {
       'Halo ' + nama + '! 👋\n\n' +
       'Update pesanan Anda di Penjahit Bintang:\n\n' +
       '📋 No. Order: *' + nomor + '*\n' +
-      info.icon + ' Status: *' + info.label + '*\n\n' +
+      info.ikonWA + ' Status: *' + info.label + '*\n\n' +
       'Pantau pesanan di:\n' +
       'https://penjahit-bintang.vercel.app/status.html\n\n' + // ← GANTI URL
       'Terima kasih! 🙏';
@@ -291,14 +292,14 @@ function setText(id, val) {
 /* ── INFO STATUS ── */
 function infoStatus(status) {
   var map = {
-    'menunggu_konfirmasi': { label: 'Menunggu Konfirmasi', warna: '#f59e0b', icon: '⏳' },
-    'dikonfirmasi':        { label: 'Dikonfirmasi',         warna: '#3b82f6', icon: '✅' },
-    'diproses':            { label: 'Sedang Diproses',      warna: '#8b5cf6', icon: '🧵' },
-    'selesai':             { label: 'Selesai',               warna: '#10b981', icon: '🎉' },
-    'diambil':             { label: 'Sudah Diambil',         warna: '#6b7280', icon: '📦' },
-    'ditolak':             { label: 'Ditolak',               warna: '#ef4444', icon: '✕' }
+    'menunggu_konfirmasi': { label: 'Menunggu Konfirmasi', warna: '#f59e0b', icon: Icons.loading, ikonWA: '⏳' },
+    'dikonfirmasi':        { label: 'Dikonfirmasi',         warna: '#3b82f6', icon: Icons.cek,    ikonWA: '✅' },
+    'diproses':            { label: 'Sedang Diproses',      warna: '#8b5cf6', icon: Icons.jahit,  ikonWA: '🧵' },
+    'selesai':             { label: 'Selesai',               warna: '#10b981', icon: Icons.sukses, ikonWA: '🎉' },
+    'diambil':             { label: 'Sudah Diambil',         warna: '#6b7280', icon: Icons.paket,  ikonWA: '📦' },
+    'ditolak':             { label: 'Ditolak',               warna: '#ef4444', icon: Icons.tolak,  ikonWA: '✕'  }
   };
-  return map[status] || { label: status, warna: '#6b7280', icon: '❓' };
+  return map[status] || { label: status, warna: '#6b7280', icon: Icons.tanya, ikonWA: '❓' };
 }
 
 
