@@ -9,7 +9,7 @@ import { onAuthStateChanged, signOut }           from 'https://www.gstatic.com/f
 import { ref, push, onValue, remove, update }    from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
 import { Icons }                                 from './icons.js';
 
-const EMAIL_ADMIN      = 'emailadmin@gmail.com';  // ← GANTI INI
+const EMAIL_ADMIN      = 'penjahitbintangnia@gmail.com';  // ← GANTI INI
 const CLOUDINARY_URL   = 'https://api.cloudinary.com/v1_1/dhi4xmvsr/image/upload';
 const CLOUDINARY_PRESET = 'penjahit-bintang';
 
