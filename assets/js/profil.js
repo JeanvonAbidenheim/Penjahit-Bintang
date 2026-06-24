@@ -13,6 +13,7 @@ import { onAuthStateChanged,
          reauthenticateWithCredential,
          EmailAuthProvider }                     from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';
 import { ref, get, update }                      from 'https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js';
+import { Icons }                                 from './icons.js';
 
 /* ── Konfigurasi Cloudinary ── */
 const CLOUDINARY_URL    = 'https://api.cloudinary.com/v1_1/dhi4xmvsr/image/upload';
@@ -145,7 +146,7 @@ function initFormPassword() {
       if (!input) return;
       var tampil  = input.type === 'password';
       input.type  = tampil ? 'text' : 'password';
-      btn.textContent = tampil ? '🙈' : '👁️';
+      btn.innerHTML = tampil ? Icons.mataTutup : Icons.mata;
     });
   });
 
